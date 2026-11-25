@@ -101,8 +101,16 @@ await browser.close(); stop();
 
 // Phone footage is centred on a dark 1280x720 frame so both halves share one size.
 const vf = '[0:v]fps=25,scale=1280:720,setsar=1[a];[1:v]fps=25,scale=-2:720,pad=1280:720:(ow-iw)/2:0:color=0x07212e,setsar=1[b];[a][b]concat=n=2:v=1:a=0[v]';
-execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', d, '-i', m, '-filter_complex', vf, '-map', '[v]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '27', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out]);
+// Uploads through Claude's Google connectors are capped at about 3.1 MB per file, so the
+// video is encoded at the best quality that stays under LIMIT.
+const LIMIT = 2_950_000;
+let crf = 28;
+for (;;) {
+  execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', d, '-i', m, '-filter_complex', vf, '-map', '[v]', '-c:v', 'libx264', '-preset', 'veryslow', '-crf', String(crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out]);
+  if (statSync(out).size <= LIMIT || crf >= 36) break;
+  crf++;
+}
 rmSync(tmp, { recursive: true, force: true });
-const mb = statSync(out).size / 1048576;
-console.log(`${out}  ${mb.toFixed(1)} MB${mb > 20 ? '  (over 20 MB: shorten the tour or raise -crf)' : ''}`);
+const size = statSync(out).size;
+console.log(`${out}  ${(size / 1048576).toFixed(2)} MB (crf ${crf})${size > LIMIT ? '  STILL OVER 3 MB: shorten the tour' : ''}`);
 process.exit(0);
