@@ -158,18 +158,26 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
 ### 7. Write the email and create the draft
 - To: the address in column D. From the sheet only; never guess an address.
 - Subject: under 50 characters, specific to them, no clickbait, no ALL CAPS, no "Re:".
-- Body: plain text, under 130 words, in this order: one true, specific observation about
+- Body: under 130 words, in this order: one true, specific observation about
   their business (rating, reviews, no website); "so I built you one" and the link on its own
   line; one sentence on the most impressive thing to try; the Drive video link on its own line
   for anyone who would rather watch than click around; one clear next step (reply to this
-  email). Sign off as Samuel Lim,
-  samuelelim.com. Last line: a plain opt-out ("Not interested? Reply 'no thanks' and I won't
-  email again."). Do not mention SEO retainers or prices in this first email.
+  email); then a plain opt-out ("Not interested? Reply 'no thanks' and I won't email again.").
+  No typed sign-off, name or website: Samuel's Gmail signature is added instead.
+  Do not mention SEO retainers or prices in this first email.
+- Send it as `htmlBody` (short `<p>` paragraphs, each link as
+  `<a href="URL">URL</a>` on its own line) plus the same text as `body`, with
+  `includeSignature: true`. Always include the signature.
 - Repeat the mailbox check from step 0 right before this step.
 - No attachments: the video goes in as the Drive link. Create the draft with the Gmail draft
   tool. Do not send it.
 - Check the `viewUrl` the draft tool returns: `authuser=` must be `samlim@samuelelim.com`.
   If it is not, delete that draft (it is the one you just made), and record it as in step 0.
+- Known limitation: Claude's Gmail connection rewrites every link Claude writes into a
+  `google.com/url?q=...` redirect, and those redirects show a Google warning page once they
+  expire (about a day). Do not try to get around this (no disguised or broken-up URLs).
+  Instead, start column Q with `BEFORE SENDING: replace the 2 links with the ones in K and M.`
+  Samuel fixes them in Gmail before he sends.
 - Compliance notes go in column Q, not in the email. UK sole traders: write
   `Check consent before sending (UK sole trader, PECR)`. AU: `Check Spam Act consent basis`.
 
