@@ -59,6 +59,10 @@ N Email subject, O Email body, P Gmail draft, Q Agent log.
   My Drive. The folder's `owner` must be exactly `samlim@samuelelim.com`. If it is anything
   else, upload nothing and share nothing, and treat the run as if the mailbox check failed
   (the email needs the video link): status `Draft pending`, and say why in P.
+- **Vercel token expiry.** Run `node tools/token-check.mjs`. If it prints `DAYS_LEFT=<n>` with
+  n of 14 or less, put `Vercel token expires in <n> days: create a new one and replace it in the
+  environment's network secrets` at the start of `Prospects!Q1` (once; do not repeat an
+  identical line) and carry on with the run.
 - If Vercel or GitHub is unavailable, append one dated line to `Prospects!Q1` and stop.
 
 ### 0b. Catch up on drafts that are owed
@@ -194,3 +198,4 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
 | `node tools/check.mjs --site sites/<slug>` | Phone, tablet and desktop screenshots; fails on errors or overflow |
 | `node tools/record.mjs --site sites/<slug>` | Records desktop + phone walkthrough to `walkthrough.mp4` |
 | `node tools/deploy.mjs --site sites/<slug>` | Deploys `dist/` to Vercel and prints the public link |
+| `node tools/token-check.mjs` | Days left on the Vercel token |
