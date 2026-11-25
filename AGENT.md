@@ -47,10 +47,12 @@ N Email subject, O Email body, P Gmail draft, Q Agent log.
 - Read `Prospects!T1`. If it is not `ON`, stop without changing anything.
 - `curl -s -o /dev/null -w '%{http_code}' https://api.vercel.com/v2/user` must print `200`.
 - Confirm you can push to this repository.
-- Confirm the Gmail connector is the right mailbox: list one draft or one sent thread and
-  check the account in its `viewUrl` (`authuser=`). If it is not `samlim@samuelelim.com`,
-  do everything else but **do not create the draft**; put the subject and body in columns
-  N and O and write `Draft not created: Gmail connector is signed in to another account` in P.
+- **Mailbox check (required before any Gmail call that writes).** List one draft (or, if there
+  are none, one sent thread) and read its `sender` and the `authuser=` value in its `viewUrl`.
+  Both must be exactly `samlim@samuelelim.com`. If they are anything else, or the check cannot
+  be done, do everything else but **do not create the draft**: put the subject and body in
+  columns N and O and write `Draft not created: Gmail connector is signed in to <account>,
+  not samlim@samuelelim.com` in P.
 - If Vercel or GitHub is unavailable, append one dated line to `Prospects!Q1` and stop.
 
 ### 1. Pick the prospect
@@ -134,7 +136,10 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   rather not click; one clear next step (reply to this email). Sign off as Samuel Lim,
   samuelelim.com. Last line: a plain opt-out ("Not interested? Reply 'no thanks' and I won't
   email again."). Do not mention SEO retainers or prices in this first email.
+- Repeat the mailbox check from step 0 right before this step.
 - Attach `walkthrough.mp4`. Create the draft with the Gmail draft tool. Do not send it.
+- Check the `viewUrl` the draft tool returns: `authuser=` must be `samlim@samuelelim.com`.
+  If it is not, delete that draft (it is the one you just made), and record it as in step 0.
 - Compliance notes go in column Q, not in the email. UK sole traders: write
   `Check consent before sending (UK sole trader, PECR)`. AU: `Check Spam Act consent basis`.
 
