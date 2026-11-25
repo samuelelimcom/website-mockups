@@ -1,0 +1,27 @@
+---
+import { site, services } from '../data/site.js';
+const { path = '/' } = Astro.props;
+---
+<header class="top">
+  <a class="brand" href="/" aria-label={`${site.name} home`}>
+    <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M16 3c5 6.400 8.500 10.700 8.500 15.200a8.500 8.500 0 0 1-17 0C7.500 13.700 11 9.400 16 3z" fill="currentColor"/><path d="M11.800 19a4.300 4.300 0 0 0 3.900 4" fill="none" stroke="#07212e" stroke-width="1.800" stroke-linecap="round"/></svg>
+    <span><b>{site.short}</b><i>{site.tagline}</i></span>
+  </a>
+  <nav class="nav" id="nav" aria-label="Main">
+    {services.map((s) => (
+      <a href={`/services/${s.slug}/`} aria-current={path === `/services/${s.slug}/` ? 'page' : undefined}>{s.name}</a>
+    ))}
+    <a href="/#reviews">Reviews</a>
+    <a class="btn btn--sm" href="/quote/">Free quote</a>
+  </nav>
+  <a class="top__call" href={`tel:${site.phoneHref}`}>{site.phoneDisplay}</a>
+  <button class="menu" type="button" aria-controls="nav" aria-expanded="false"><span></span><span></span><i class="sr">Menu</i></button>
+</header>
+<script>
+  const btn = document.querySelector('.menu'), nav = document.getElementById('nav');
+  btn?.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  nav?.addEventListener('click', (e) => { if (e.target.closest('a')) { nav.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); } });
+</script>

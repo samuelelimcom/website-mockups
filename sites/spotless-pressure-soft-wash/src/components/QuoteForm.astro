@@ -1,0 +1,126 @@
+---
+// Multi-step quote request. DEMO ONLY: it validates and shows a success state
+// but sends nothing, because this preview is not operated by the business.
+import { site } from '../data/site.js';
+const { preselect = '', heading = 'Get your free quote', id = 'quote' } = Astro.props;
+const jobs = [
+  ['house', 'House / siding'],
+  ['driveway', 'Driveway / concrete'],
+  ['roof', 'Roof'],
+  ['deck', 'Deck or fence'],
+  ['other', 'Something else'],
+];
+---
+<section class="quote" id={id}>
+  <div class="quote__head">
+    <h2>{heading}</h2>
+    <p>Three quick steps. No call centre, no obligation.</p>
+  </div>
+  <form class="qf" data-quote novalidate>
+    <ol class="qf__steps" aria-hidden="true"><li class="is-on">Job</li><li>Property</li><li>Contact</li></ol>
+
+    <fieldset class="qf__panel is-on" data-step="0">
+      <legend>What needs washing?</legend>
+      <div class="chips">
+        {jobs.map(([v, l]) => (
+          <label class="chip"><input type="checkbox" name="job" value={l} checked={v === preselect} /><span>{l}</span></label>
+        ))}
+      </div>
+      <p class="qf__err" data-err hidden>Pick at least one so we know what to quote.</p>
+      <div class="qf__nav"><button class="btn" type="button" data-next>Next: your property</button></div>
+    </fieldset>
+
+    <fieldset class="qf__panel" data-step="1">
+      <legend>Tell us about the property</legend>
+      <div class="seg" role="group" aria-label="Storeys">
+        <span class="seg__l">Storeys</span>
+        {['1', '2', '3+'].map((v, i) => (
+          <label><input type="radio" name="storeys" value={v} checked={i === 0} /><span>{v}</span></label>
+        ))}
+      </div>
+      <label class="range">
+        <span>Roughly how big? <output data-size-out>2,000 sq ft</output></span>
+        <input type="range" name="size" min="800" max="5000" step="100" value="2000" data-size />
+      </label>
+      <div class="seg" role="group" aria-label="Timing">
+        <span class="seg__l">When</span>
+        {['As soon as possible', 'This month', 'Just planning'].map((v, i) => (
+          <label><input type="radio" name="when" value={v} checked={i === 1} /><span>{v}</span></label>
+        ))}
+      </div>
+      <div class="qf__nav">
+        <button class="btn btn--ghost" type="button" data-back>Back</button>
+        <button class="btn" type="button" data-next>Next: your details</button>
+      </div>
+    </fieldset>
+
+    <fieldset class="qf__panel" data-step="2">
+      <legend>Where should the quote go?</legend>
+      <p class="qf__sum" data-summary></p>
+      <div class="fields">
+        <label>Name<input name="name" autocomplete="name" required /></label>
+        <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+() .-]{7,}" /></label>
+        <label class="wide">Email <small>(optional)</small><input name="email" type="email" autocomplete="email" /></label>
+        <label class="wide">Anything we should know? <small>(optional)</small><textarea name="notes" rows="2"></textarea></label>
+      </div>
+      <p class="qf__err" data-err hidden>Please add your name and a phone number we can reach you on.</p>
+      <div class="qf__nav">
+        <button class="btn btn--ghost" type="button" data-back>Back</button>
+        <button class="btn" type="submit">Send my request</button>
+      </div>
+    </fieldset>
+
+    <div class="qf__done" data-done hidden tabindex="-1">
+      <svg viewBox="0 0 48 48" width="52" height="52" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#22c3d6"/><path d="M14 24.500l7 7 13-14" fill="none" stroke="#07212e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>That is how easy it would be.</h3>
+      <p data-done-sum></p>
+      <p class="qf__demo">This is a concept preview, so nothing was sent. On the live site this request would land on {site.short}'s phone the moment you press send.</p>
+      <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay} instead</a>
+    </div>
+  </form>
+</section>
+<script>
+  document.querySelectorAll('[data-quote]').forEach((form) => {
+    const panels = [...form.querySelectorAll('[data-step]')];
+    const dots = [...form.querySelectorAll('.qf__steps li')];
+    const size = form.querySelector('[data-size]'), out = form.querySelector('[data-size-out]');
+    const fmt = (n) => Number(n).toLocaleString('en-US') + (Number(n) >= 5000 ? '+' : '') + ' sq ft';
+    let step = 0;
+    const jobs = () => [...form.querySelectorAll('input[name=job]:checked')].map((i) => i.value);
+    const summary = () => {
+      const d = new FormData(form);
+      return `${jobs().join(', ')} · ${d.get('storeys')} storey${d.get('storeys') === '1' ? '' : 's'} · about ${fmt(d.get('size'))} · ${String(d.get('when')).toLowerCase()}`;
+    };
+    function show(n) {
+      step = n;
+      panels.forEach((p, i) => p.classList.toggle('is-on', i === n));
+      dots.forEach((d, i) => { d.classList.toggle('is-on', i === n); d.classList.toggle('is-past', i < n); });
+      if (n === 2) form.querySelector('[data-summary]').textContent = summary();
+      panels[n].querySelector('legend')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function valid(n) {
+      const err = panels[n].querySelector('[data-err]');
+      let ok = true;
+      if (n === 0) ok = jobs().length > 0;
+      if (n === 2) ok = [...panels[2].querySelectorAll('input[required]')].every((i) => i.checkValidity());
+      if (err) err.hidden = ok;
+      return ok;
+    }
+    size.addEventListener('input', () => { out.textContent = fmt(size.value); size.style.setProperty('--p', ((size.value - size.min) / (size.max - size.min)) * 100 + '%'); });
+    size.dispatchEvent(new Event('input'));
+    form.addEventListener('click', (e) => {
+      if (e.target.closest('[data-next]') && valid(step)) show(step + 1);
+      if (e.target.closest('[data-back]')) show(step - 1);
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!valid(2)) return;
+      const name = String(new FormData(form).get('name')).trim().split(' ')[0];
+      panels.forEach((p) => p.classList.remove('is-on'));
+      form.querySelector('.qf__steps').hidden = true;
+      const done = form.querySelector('[data-done]');
+      form.querySelector('[data-done-sum]').textContent = `Thanks, ${name}. Your request: ${summary()}.`;
+      done.hidden = false; done.focus();
+    });
+  });
+</script>

@@ -1,0 +1,15 @@
+{
+  "name": "spotless-pressure-soft-wash",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1 --port 4321"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.2.0",
+    "astro": "^7.4.13",
+    "three": "^0.187.0"
+  }
+}

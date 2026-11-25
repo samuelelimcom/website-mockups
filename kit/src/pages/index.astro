@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import Stage from '../components/Stage.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site, services } from '../data/site.js';
+---
+<Base title={`Pressure & soft washing in ${site.city}, ${site.region}`} description={`${site.name}: house washing, driveway cleaning and roof soft washing across ${site.area}. Rated ${site.rating} on Google.`} path="/">
+  <section class="story" id="story">
+    <Stage surface="concrete" mode="scroll" track="#story" class="story__stage" label="A 3D section of concrete driveway, half covered in grime, being pressure washed clean" />
+    <div class="story__chapters">
+      <article class="chapter chapter--hero">
+        <div class="card">
+          <p class="eyebrow">Pressure &amp; soft washing · {site.city}, {site.region}</p>
+          <h1>The grime took years to arrive. It leaves in an afternoon.</h1>
+          <p>Driveways, siding and roofs across {site.area}, washed the way each surface actually needs.</p>
+          <div class="actions">
+            <a class="btn" href="#quote">Get a free quote</a>
+            <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+          </div>
+          <a class="rating" href="#reviews"><b>★★★★★</b> {site.rating} from {site.reviews} Google reviews</a>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num">01 · HOW IT GOT THIS WAY</p>
+          <h2>It crept in a shade at a time.</h2>
+          <p>Warm, humid Tennessee summers are perfect for algae and mildew. Add red clay, tyre marks and a few wet autumns, and concrete darkens so slowly you stop seeing it.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num">02 · THE FIRST PASS</p>
+          <h2>Then one clean line changes everything.</h2>
+          <p>Even, overlapping passes lift what years left behind. No stripes, no etched concrete, no water forced where it should not go.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num">03 · THE REVEAL</p>
+          <h2>This is the colour it was poured in.</h2>
+          <p>Brighter kerb appeal, safer walkways and a home that looks cared for from the street. That is the whole job.</p>
+          <div class="actions"><a class="btn" href="#quote">See what yours would cost</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Two ways to wash</p>
+        <h2>Pressure where it is tough. Soft wash where it is not.</h2>
+        <p class="lede">The name says both for a reason. The wrong method on the wrong surface is how siding gets scarred and shingles lose their grit.</p>
+      </div>
+      <div class="grid grid--2">
+        <div class="tile tile--dark">
+          <span class="tag">Pressure washing</span>
+          <h3>For concrete, brick and stone</h3>
+          <p>High pressure and steady passes cut through ground-in dirt on surfaces built to take it: driveways, walkways, patios and kerbs.</p>
+        </div>
+        <div class="tile">
+          <span class="tag">Soft washing</span>
+          <h3>For siding, roofs and painted wood</h3>
+          <p>A cleaning solution does the work and a gentle rinse carries it away, so nothing is forced, lifted or stripped.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band" id="services">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Services</p>
+        <h2>Pick the part of your home that is bothering you.</h2>
+      </div>
+      <div class="grid grid--3">
+        {services.map((s) => (
+          <a class="tile svc" href={`/services/${s.slug}/`}>
+            <div class={`swatch swatch--${s.surface}`}></div>
+            <div class="svc__body">
+              <span class="tag">{s.kicker}</span>
+              <h3>{s.name}</h3>
+              <p>{s.short}</p>
+              <span class="svc__go">See how it works →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <section class="sec">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">How it works</p>
+        <h2>From grey to gleaming in three steps.</h2>
+        <ol class="steps" style="grid-template-columns:1fr;margin-top:10px">
+          <li><h3>Tell us what needs washing</h3><p>Thirty seconds on the form, or a quick call.</p></li>
+          <li><h3>Get a clear quote</h3><p>One price for the job you described. No surprises on the day.</p></li>
+          <li><h3>Enjoy the reveal</h3><p>Most homes are finished in a single visit.</p></li>
+        </ol>
+      </div>
+      <QuoteForm />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,18 @@
+---
+import { site } from '../data/site.js';
+---
+<section class="reviews" id="reviews">
+  <div class="wrap reviews__in">
+    <p class="reviews__score" aria-label={`${site.rating} out of 5 stars`}>
+      <span>{site.rating}</span>
+      <svg viewBox="0 0 120 24" width="150" height="30" aria-hidden="true">
+        {[0, 1, 2, 3, 4].map((i) => <path transform={`translate(${i * 24} 0)`} d="M12 1.800l3.100 6.500 7.100.900-5.200 4.900 1.300 7-6.300-3.400-6.300 3.400 1.300-7L1.800 9.200l7.100-.900z" fill="#ffd166"/>)}
+      </svg>
+    </p>
+    <div>
+      <h2>{site.reviews} neighbours have rated {site.short} on Google. The average is a perfect {site.rating}.</h2>
+      <p>We would rather you read their words than ours.</p>
+      <a class="btn btn--light" href={site.gbp} rel="noopener">Read the reviews on Google</a>
+    </div>
+  </div>
+</section>
