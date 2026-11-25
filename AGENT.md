@@ -55,6 +55,14 @@ N Email subject, O Email body, P Gmail draft, Q Agent log.
   not samlim@samuelelim.com` in P.
 - If Vercel or GitHub is unavailable, append one dated line to `Prospects!Q1` and stop.
 
+### 0b. Catch up on drafts that are owed
+Status `Draft pending` means the mockup is live but the email draft was not made (usually
+because the mailbox check failed). If the mailbox check now passes, for every such row:
+create the draft from columns D (to), N (subject) and O (body), attach
+`sites/<slug>/walkthrough.mp4` from this repository, then fill P and set J to
+`Draft ready <date>`. Do this before picking a new prospect. It does not count as the run's
+one prospect.
+
 ### 1. Pick the prospect
 - Read the whole sheet. Take the first row whose Status (J) is empty.
 - Re-check it still has no website: search the exact name with the city, and the phone number.
@@ -140,14 +148,16 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   samuelelim.com. Last line: a plain opt-out ("Not interested? Reply 'no thanks' and I won't
   email again."). Do not mention SEO retainers or prices in this first email.
 - Repeat the mailbox check from step 0 right before this step.
-- Attach `walkthrough.mp4`. Create the draft with the Gmail draft tool. Do not send it.
+- Attach `walkthrough.mp4`: give the Gmail draft tool a file reference,
+  `sha256:<sha256sum of the file>:<absolute path>`, with filename `walkthrough.mp4` and mimeType
+  `video/mp4`. Create the draft with the Gmail draft tool. Do not send it.
 - Check the `viewUrl` the draft tool returns: `authuser=` must be `samlim@samuelelim.com`.
   If it is not, delete that draft (it is the one you just made), and record it as in step 0.
 - Compliance notes go in column Q, not in the email. UK sole traders: write
   `Check consent before sending (UK sole trader, PECR)`. AU: `Check Spam Act consent basis`.
 
 ### 8. Update the sheet and finish
-- J `Draft ready <date>` (or the failure), K live link, L GitHub folder URL, M GitHub link to
+- J `Draft ready <date>`, or `Draft pending` if only the draft is missing, or the failure; K live link, L GitHub folder URL, M GitHub link to
   the video file, N subject, O body, P Gmail draft link, Q a short dated log of what happened.
 - Do step 1b now if the queue is low.
 - End with a five-line summary: business, link, draft status, anything Samuel must check.
