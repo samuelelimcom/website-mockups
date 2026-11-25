@@ -123,9 +123,12 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
 ### 6. Publish
 - Commit `sites/<slug>` (including `walkthrough.mp4` and `BRIEF.md`, never `node_modules`,
   `dist` or `shots`) and push to the default branch.
-- `node tools/deploy.mjs --site sites/<slug>` prints the public link. Fetch that link with the
-  web fetch tool and confirm the page title is the mockup's. If the link asks for a Vercel
-  login, record that in Q and treat the run as failed.
+- `node tools/deploy.mjs --site sites/<slug>` prints the public link. It only prints one after
+  Vercel reports the deployment READY and the project's login protection is switched off.
+  `*.vercel.app` pages cannot be opened from this environment, so do not try to fetch the link;
+  confirm instead with `curl -s https://api.vercel.com/v9/projects/preview-<slug>` that
+  `ssoProtection` and `passwordProtection` are both null. If they are not, record that in Q and
+  treat the run as failed.
 
 ### 7. Write the email and create the draft
 - To: the address in column D. From the sheet only; never guess an address.

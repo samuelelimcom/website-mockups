@@ -66,7 +66,11 @@ for (let i = 0; i < 60 && !['READY', 'ERROR', 'CANCELED'].includes(d.readyState)
 if (d.readyState !== 'READY') { console.error(`Deployment ended as ${d.readyState}`); process.exit(5); }
 
 // Mockups must open without a Vercel login, so switch off deployment protection for this project.
-if (d.projectId) api('PATCH', `/v9/projects/${d.projectId}`, { body: { ssoProtection: null } });
+if (d.projectId) {
+  api('PATCH', `/v9/projects/${d.projectId}`, { body: { ssoProtection: null } });
+  const proj = api('GET', `/v9/projects/${d.projectId}`).json;
+  if (proj.ssoProtection || proj.passwordProtection) { console.error('Deployed, but the project still requires a login to view.'); process.exit(6); }
+}
 
 const alias = (d.alias || []).find((a) => a.endsWith('.vercel.app')) || d.url;
 console.log(`https://${alias}`);
