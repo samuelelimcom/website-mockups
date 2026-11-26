@@ -14,7 +14,7 @@ and later takes a monthly SEO retainer. Everything you make should serve that, h
 | Prospect sheet | Google Sheet `1Yu-ALPlwOAAfNcNAPba-cvVT3BP9PNINNLWpZhAIhjg`, tab `Prospects` |
 | On/off switch | Cell `Prospects!T1`. Anything other than `ON` means stop immediately. |
 | Sender mailbox | `samlim@samuelelim.com` (drafts only) |
-| Video hosting | Google Drive of `samlim@samuelelim.com`, folder `Website Mockup Walkthroughs` |
+| Video | Attached to the email draft. Backup copy on the Google Drive of `samlim@samuelelim.com`, folder `Website Mockup Walkthroughs` |
 | Code | This repository. One folder per prospect in `sites/<slug>/`. |
 | Hosting | Vercel, one project per prospect, via `tools/deploy.mjs` |
 
@@ -63,8 +63,8 @@ N Email subject, O Email body, P Gmail draft, Q Agent log.
 - **Drive account check (required before any Drive upload or share).** Search Drive for the
   folder titled `Website Mockup Walkthroughs` owned by you; if it does not exist, create it in
   My Drive. The folder's `owner` must be exactly `samlim@samuelelim.com`. If it is anything
-  else, upload nothing and share nothing, and treat the run as if the mailbox check failed
-  (the email needs the video link): status `Draft pending`, and say why in P.
+  else, upload nothing and share nothing, write `Not on Drive: Drive connector is signed in to
+  <account>` in M, and carry on: the email attaches the video, so the draft does not need Drive.
 - **Vercel token expiry.** Run `node tools/token-check.mjs`. If it prints `DAYS_LEFT=<n>` with
   n of 14 or less, put `Vercel token expires in <n> days: create a new one and replace it in the
   environment's network secrets` at the start of `Prospects!Q1` (once; do not repeat an
@@ -73,10 +73,12 @@ N Email subject, O Email body, P Gmail draft, Q Agent log.
 
 ### 0b. Catch up on drafts that are owed
 Status `Draft pending` means the mockup is live but the email draft was not made (usually
-because the mailbox or Drive check failed). If both checks now pass, for every such row: if
-column M is not yet a Drive link, upload and share `sites/<slug>/walkthrough.mp4` as in step 6b
-and put the link in M and in the email body (replacing `[VIDEO LINK]`); then create the draft
-from columns D (to), N (subject) and O (body), fill P and set J to `Draft ready <date>`. Do this before picking a new prospect. It does not count as the run's
+because the mailbox check failed). If the mailbox check now passes, for every such row: create
+the draft from columns D (to), N (subject) and O (body) with `sites/<slug>/walkthrough.mp4`
+attached as in step 7 (if O still contains a `[VIDEO LINK]` line from an older run, replace that
+line with "If you'd rather watch than click around, I've attached a 2-minute walkthrough video."),
+fill P and set J to `Draft ready <date>`. If the Drive check passes and M is not yet a Drive
+link, also do step 6b for that row. Do this before picking a new prospect. It does not count as the run's
 one prospect.
 
 ### 1. Pick the prospect
@@ -156,7 +158,9 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   `ssoProtection` and `passwordProtection` are both null. If they are not, record that in Q and
   treat the run as failed.
 
-### 6b. Put the video on Google Drive
+### 6b. Put a backup copy of the video on Google Drive
+The email attaches the video; the Drive copy is only a backup link for follow-ups (column M).
+If the Drive check failed, skip this step.
 - After the Drive account check passes, upload `sites/<slug>/walkthrough.mp4` into the
   `Website Mockup Walkthroughs` folder with the Drive create tool: title
   `<Business name> - website walkthrough.mp4`, `contentMimeType` `video/mp4`,
@@ -170,8 +174,8 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
 - Subject: under 50 characters, specific to them, no clickbait, no ALL CAPS, no "Re:".
 - Body: under 130 words, in this order: one true, specific observation about
   their business (rating, reviews, no website); "so I built you one" and the link on its own
-  line; one sentence on the most impressive thing to try; the Drive video link on its own line
-  for anyone who would rather watch than click around; one clear next step (reply to this
+  line; one sentence on the most impressive thing to try; "If you'd rather watch than click
+  around, I've attached a 2-minute walkthrough video." (no video link); one clear next step (reply to this
   email); then a plain opt-out ("Not interested? Reply 'no thanks' and I won't email again.").
   No typed sign-off, name or website: Samuel's Gmail signature is added instead.
   Do not mention SEO retainers or prices in this first email.
@@ -179,21 +183,27 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   `<a href="URL">URL</a>` on its own line) plus the same text as `body`, with
   `includeSignature: true`. Always include the signature.
 - Repeat the mailbox check from step 0 right before this step.
-- No attachments: the video goes in as the Drive link. Create the draft with the Gmail draft
-  tool. Do not send it.
+- Attach the video: `attachments` with one item, `content` set to a file reference
+  `sha256:<sha256sum of the file>:<absolute path of sites/<slug>/walkthrough.mp4>`, `filename`
+  `<Business name> - website walkthrough.mp4`, `mimeType` `video/mp4`. Create the draft with the
+  Gmail draft tool. Do not send it.
+- Confirm the attachment landed: `list_drafts` with query `has:attachment to:<address in D>` must
+  return the new draft. If it does not, delete that draft, create it again once; if it still has
+  no attachment, fall back to the Drive link from M on its own line (and say so in Q).
 - Check the `viewUrl` the draft tool returns: `authuser=` must be `samlim@samuelelim.com`.
   If it is not, delete that draft (it is the one you just made), and record it as in step 0.
 - Known limitation: Claude's Gmail connection rewrites every link Claude writes into a
   `google.com/url?q=...` redirect, and those redirects show a Google warning page once they
   expire (about a day). Do not try to get around this (no disguised or broken-up URLs).
-  Instead, start column Q with `BEFORE SENDING: replace the 2 links with the ones in K and M.`
-  Samuel fixes them in Gmail before he sends.
+  Instead, start column Q with `BEFORE SENDING: replace the mockup link with the one in K.`
+  (or `...the 2 links with the ones in K and M.` if the Drive-link fallback was used).
+  Samuel fixes it in Gmail before he sends.
 - Compliance notes go in column Q, not in the email. UK sole traders: write
   `Check consent before sending (UK sole trader, PECR)`. AU: `Check Spam Act consent basis`.
 
 ### 8. Update the sheet and finish
-- J `Draft ready <date>`, or `Draft pending` if only the draft is missing, or the failure; K live link, L GitHub folder URL, M Drive link to
-  the video, N subject, O body, P Gmail draft link, Q a short dated log of what happened.
+- J `Draft ready <date>`, or `Draft pending` if only the draft is missing, or the failure; K live link, L GitHub folder URL, M Drive backup link to
+  the video (or why it is not on Drive), N subject, O body, P Gmail draft link, Q a short dated log of what happened.
 - Do step 1b now if the queue is low.
 - End with a five-line summary: business, link, draft status, anything Samuel must check.
 
