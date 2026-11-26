@@ -1,0 +1,73 @@
+---
+import Base from '../../layouts/Base.astro';
+import Stage from '../../components/Stage.astro';
+import QuoteForm from '../../components/QuoteForm.astro';
+import { site, services } from '../../data/site.js';
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+const { s } = Astro.props;
+const others = services.filter((o) => o.slug !== s.slug);
+const labels = {
+  mow: 'A 3D block of lawn being mown in stripes by a push mower, then edged along the sidewalk',
+  leaves: 'A 3D block of striped lawn covered in autumn leaves that a leaf blower clears away',
+  straw: 'A 3D planting bed around boxwood shrubs filling up with fresh pine straw beside a mown lawn',
+};
+---
+<Base title={`${s.name} in ${site.city}, ${site.region}`} description={s.short} path={`/services/${s.slug}/`}>
+  <div class="wrap shero">
+    <div class="shero__text">
+      <p class="eyebrow">{s.name} · {site.city}, {site.region}</p>
+      <h1>{s.headline}</h1>
+      <p class="lede">{s.lede}</p>
+      <div class="actions">
+        <a class="btn" href="#quote">Get a free quote</a>
+        <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+      </div>
+      <a class="rating" href="/#reviews"><b>★★★★★</b> {site.rating} from {site.reviews} Google reviews</a>
+    </div>
+    <Stage surface={s.surface} mode="auto" hint={s.hint} label={labels[s.surface]} />
+  </div>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec__head"><p class="eyebrow">What's included</p><h2>What this job usually covers.</h2></div>
+      <div class="grid grid--3">
+        {s.what.map(([t, d], i) => <div class="tile"><span class="tile__n">0{i + 1}</span><h3>{t}</h3><p>{d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band">
+    <div class="wrap">
+      <div class="sec__head"><p class="eyebrow">How it's done</p><h2>Three steps, in the right order.</h2></div>
+      <ol class="steps">{s.steps.map(([t, d]) => <li><h3>{t}</h3><p>{d}</p></li>)}</ol>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap split">
+      <div>
+        <div class="sec__head"><p class="eyebrow">Good to know</p><h2>Questions people ask first.</h2></div>
+        <div class="faq">
+          {s.faqs.map(([q, a], i) => <details open={i === 0}><summary>{q}</summary><p>{a}</p></details>)}
+        </div>
+      </div>
+      <QuoteForm preselect={s.slug} heading={`Quote my ${s.job.toLowerCase()}`} />
+    </div>
+  </section>
+
+  <section class="sec band">
+    <div class="wrap">
+      <div class="sec__head"><p class="eyebrow">While the crew is there</p><h2>Often added to the same visit.</h2></div>
+      <div class="svcs svcs--2">
+        {others.map((o) => (
+          <a class="svc" href={`/services/${o.slug}/`}>
+            <div class={`swatch swatch--${o.surface}`}></div>
+            <div class="svc__body"><span class="tag">{o.kicker}</span><h3>{o.name}</h3><p>{o.short}</p><span class="svc__go">See how it's done →</span></div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

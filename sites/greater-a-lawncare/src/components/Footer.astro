@@ -1,0 +1,23 @@
+---
+import { site, services } from '../data/site.js';
+---
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__name">{site.name}</p>
+      <p>Lawn care in {site.area}</p>
+      <p><a href={`tel:${site.phoneHref}`}>{site.phoneDisplay}</a></p>
+      <p><a href={site.gbp} rel="noopener">★ {site.rating} from {site.reviews} Google reviews</a></p>
+    </div>
+    <nav aria-label="Services">
+      <p class="foot__h">Services</p>
+      {services.map((s) => <a href={`/services/${s.slug}/`}>{s.name}</a>)}
+      <a href="/quote/">Get a free quote</a>
+    </nav>
+  </div>
+  <p class="wrap foot__note">
+    This is a design concept created by <a href={site.designer.url}>{site.designer.name}</a> to show what a website for
+    {site.name} could look like. It is not operated by the business, forms on this preview do not send anything, and
+    service details are examples to be confirmed with the owner.
+  </p>
+</footer>

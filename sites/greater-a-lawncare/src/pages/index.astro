@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+import Stage from '../components/Stage.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site, services } from '../data/site.js';
+---
+<Base title={`Lawn care in ${site.city}, ${site.region}`} description={`${site.name}: lawn mowing, edging, yard cleanups and pine straw in ${site.area}. Rated ${site.rating} on Google.`} path="/">
+  <section class="story" id="story">
+    <Stage surface="mow" mode="scroll" track="#story" class="story__stage" label="A 3D block of lawn on red Georgia clay. A push mower mows it in stripes and an edger trims the grass back off the sidewalk." />
+    <div class="story__chapters">
+      <article class="chapter chapter--hero">
+        <div class="card card--hero">
+          <p class="eyebrow">Lawn care · {site.city}, {site.region}</p>
+          <h1>Come home to a yard that's already handled.</h1>
+          <p>Mowing, edging, cleanups and pine straw for {site.city} homes, done properly and on schedule, so your weekends are yours again.</p>
+          <div class="actions">
+            <a class="btn" href="#quote">Get a free quote</a>
+            <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+          </div>
+          <a class="rating" href="#reviews"><b>★★★★★</b> {site.rating} from {site.reviews} Google reviews</a>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>01</span> The problem</p>
+          <h2>Georgia grass doesn't wait for your weekend.</h2>
+          <p>From spring green-up into fall, a warm-season lawn in {site.city} can put on serious growth in a week of sun and rain. Miss one Saturday and it is shaggy, seeding and creeping over the sidewalk.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>02</span> The first pass</p>
+          <h2>Straight rows, at the right height.</h2>
+          <p>Cutting too low scalps a lawn and lets weeds in. Cutting at the right height, in clean overlapping passes, leaves it thick, even and striped.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>03</span> The edge</p>
+          <h2>The crisp line is what people notice.</h2>
+          <p>Grass that has crept over the concrete is cut back to a clean vertical edge, then every walk and drive is blown clear. That is the difference between mowed and done.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>04</span> Home</p>
+          <h2>Pull into the driveway and just enjoy it.</h2>
+          <p>A yard that looks cared for from the street, every visit, without you lifting a mower.</p>
+          <div class="actions"><a class="btn" href="#quote">Price my yard</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec visit">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Every regular visit</p>
+        <h2>Four jobs, done in the right order.</h2>
+        <p class="lede">A proper lawn visit is more than a mow. Here is what a full service usually covers.</p>
+      </div>
+      <ol class="visit__list">
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 30h28M10 30l4-14h12l4 14M15 16V9h10v7" /><circle cx="12" cy="31" r="3"/><circle cx="28" cy="31" r="3"/></svg><h3>Mow</h3><p>At the height your grass type likes, in straight passes.</p></li>
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 26h28M20 26V8M14 26l6-6 6 6" /></svg><h3>Edge</h3><p>Walks, drives and kerbs cut back to a clean line.</p></li>
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32 30 10M24 8l8 8M10 24c-2 2-3 5-2 8 3 1 6 0 8-2" /></svg><h3>Trim</h3><p>Fences, beds, mailboxes and tree rings.</p></li>
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 16h18a5 5 0 1 0-5-5M6 24h24a5 5 0 1 1-5 5M6 20h12" /></svg><h3>Blow</h3><p>Clippings off every hard surface before the crew leaves.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec band" id="services">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Services</p>
+        <h2>What does your yard need right now?</h2>
+      </div>
+      <div class="svcs">
+        {services.map((s, i) => (
+          <a class="svc" href={`/services/${s.slug}/`}>
+            <div class={`swatch swatch--${s.surface}`}><span>0{i + 1}</span></div>
+            <div class="svc__body">
+              <span class="tag">{s.kicker}</span>
+              <h3>{s.name}</h3>
+              <p>{s.short}</p>
+              <span class="svc__go">See how it's done →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <section class="sec">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">How it works</p>
+        <h2>From "the grass is getting away from me" to handled.</h2>
+        <ol class="steps steps--stack">
+          <li><h3>Tell us about the yard</h3><p>A minute on the form, or a quick call to {site.phoneDisplay}.</p></li>
+          <li><h3>Get a clear quote</h3><p>For the work you asked about, with no surprises on the day.</p></li>
+          <li><h3>Come home to it done</h3><p>On a regular schedule, or as a one-time job.</p></li>
+        </ol>
+      </div>
+      <QuoteForm />
+    </div>
+  </section>
+</Base>

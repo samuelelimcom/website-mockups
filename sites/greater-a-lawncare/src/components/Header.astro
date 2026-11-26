@@ -1,0 +1,27 @@
+---
+import { site, services } from '../data/site.js';
+const { path = '/' } = Astro.props;
+---
+<header class="top">
+  <a class="brand" href="/" aria-label={`${site.name} home`}>
+    <svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><rect width="32" height="32" rx="9" fill="currentColor"/><path d="M8 26 15.2 6.5c.3-.8 1.3-.8 1.6 0L24 26" fill="none" stroke="#b7d84b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.2 19.5c3.4-1.6 6.3-1.6 9.6 0" fill="none" stroke="#f6f0e2" stroke-width="2.6" stroke-linecap="round"/></svg>
+    <span><b>{site.name}</b><i>{site.tagline}</i></span>
+  </a>
+  <nav class="nav" id="nav" aria-label="Main">
+    {services.map((s) => (
+      <a href={`/services/${s.slug}/`} aria-current={path === `/services/${s.slug}/` ? 'page' : undefined}>{s.name}</a>
+    ))}
+    <a href="/#reviews">Reviews</a>
+    <a class="btn btn--sm" href="/quote/">Free quote</a>
+  </nav>
+  <a class="top__call" href={`tel:${site.phoneHref}`}>{site.phoneDisplay}</a>
+  <button class="menu" type="button" aria-controls="nav" aria-expanded="false"><span></span><span></span><i class="sr">Menu</i></button>
+</header>
+<script>
+  const btn = document.querySelector('.menu'), nav = document.getElementById('nav');
+  btn?.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  nav?.addEventListener('click', (e) => { if (e.target.closest('a')) { nav.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); } });
+</script>
