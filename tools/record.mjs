@@ -112,5 +112,6 @@ for (;;) {
 }
 rmSync(tmp, { recursive: true, force: true });
 const size = statSync(out).size;
-console.log(`${out}  ${(size / 1048576).toFixed(2)} MB (crf ${crf})${size > LIMIT ? '  STILL OVER 3 MB: shorten the tour' : ''}`);
+const secs = Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', out], { encoding: 'utf8' }));
+console.log(`${out}  ${(size / 1048576).toFixed(2)} MB, ${secs.toFixed(0)} s (crf ${crf})${size > LIMIT ? '  STILL OVER 3 MB: shorten the tour' : ''}${secs > 150 ? '  OVER 150 s: shorten the tour' : ''}`);
 process.exit(0);
