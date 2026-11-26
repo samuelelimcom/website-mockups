@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+import Stage from '../components/Stage.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site, services } from '../data/site.js';
+---
+<Base title={`Deck, house & driveway washing in ${site.city}, ${site.region}`} description={`${site.name}: deck and fence cleaning, house washing and driveway washing in ${site.area}. Rated ${site.rating} on Google.`} path="/">
+  <section class="story" id="story">
+    <Stage surface="deck" mode="scroll" track="#story" class="story__stage" label="A 3D corner of a wooden back porch, weathered gray, being pressure washed board by board back to warm cedar" />
+    <div class="story__chapters">
+      <article class="chapter chapter--hero">
+        <div class="card card--hero">
+          <p class="eyebrow">Pressure washing · {site.city}, {site.region}</p>
+          <h1>Every board, back to its color.</h1>
+          <p>Decks, fences, houses and driveways around {site.city}, washed at the pressure each one can actually take.</p>
+          <div class="actions">
+            <a class="btn" href="#quote">Get a free estimate</a>
+            <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+          </div>
+          <a class="rating" href="#reviews"><b aria-hidden="true">★</b> {site.rating} on Google · {site.reviews} reviews</a>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>I.</span> A summer at a time</p>
+          <h2>Nobody decides to let the deck go gray.</h2>
+          <p>Sun bleaches the top of the wood, shade lets mildew settle between the boards, and one spring the porch you built for evenings outside is slick and silver.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>II.</span> With the grain</p>
+          <h2>One board at a time, never across it.</h2>
+          <p>Wood is washed low and wide, the tip traveling the length of each board. That is the difference between a clean deck and a fuzzy, gouged one.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>III.</span> The porch is back</p>
+          <h2>Somewhere you want to sit again.</h2>
+          <p>The cedar color comes up, the brick step looks new, and the wood is ready for stain if you want it. Try it yourself: drag the wand along a board.</p>
+          <div class="actions"><a class="btn" href="#quote">Price my deck</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">The right pressure</p>
+        <h2>Three surfaces. Three different jobs.</h2>
+        <p class="lede">More pressure is not more clean. Each material around your home wants its own touch, and getting it wrong is how decks get gouged and siding comes loose.</p>
+      </div>
+      <div class="gauge">
+        <div class="gauge__row">
+          <span class="gauge__m">Wood</span>
+          <span class="gauge__bar"><i style="--v:38%"></i></span>
+          <p>Low and wide, along the grain. Lifts the gray without raising fibers.</p>
+        </div>
+        <div class="gauge__row">
+          <span class="gauge__m">Siding &amp; brick</span>
+          <span class="gauge__bar"><i style="--v:18%"></i></span>
+          <p>Barely more than a garden hose. A cleaner does the work, the rinse carries it off.</p>
+        </div>
+        <div class="gauge__row">
+          <span class="gauge__m">Concrete</span>
+          <span class="gauge__bar"><i style="--v:92%"></i></span>
+          <p>Full pressure in overlapping passes. It is built to take it, so it gets it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band" id="services">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">What we wash</p>
+        <h2>Start with what is bugging you.</h2>
+      </div>
+      <ol class="ledger">
+        {services.map((s, i) => (
+          <li>
+            <a class="ledger__row svc" href={`/services/${s.slug}/`}>
+              <span class="ledger__n">0{i + 1}</span>
+              <span class={`ledger__swatch swatch--${s.surface}`} aria-hidden="true"></span>
+              <span class="ledger__t"><b>{s.name}</b><span>{s.short}</span></span>
+              <span class="ledger__go" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <section class="sec">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">How it works</p>
+        <h2>Simple from the first call.</h2>
+        <ol class="steps steps--stack">
+          <li><h3>Tell us what needs washing</h3><p>The form takes about a minute, or just call.</p></li>
+          <li><h3>Get a clear estimate</h3><p>A price for the job you described, before anyone turns on a spigot.</p></li>
+          <li><h3>Come home to it clean</h3><p>An outdoor spigot and access to the area are all that is needed.</p></li>
+        </ol>
+      </div>
+      <QuoteForm />
+    </div>
+  </section>
+</Base>
