@@ -1,0 +1,127 @@
+---
+// Multi-step quote request. DEMO ONLY: it validates and shows a success state
+// but sends nothing, because this preview is not operated by the business.
+import { site } from '../data/site.js';
+const { preselect = '', heading = 'Get a free window cleaning quote', id = 'quote' } = Astro.props;
+const jobs = [
+  ['window-cleaning', 'Windows'],
+  ['upvc-frames-sills', 'Frames, sills & doors'],
+  ['fascias-gutters', 'Fascias & gutters'],
+  ['conservatory', 'Conservatory'],
+  ['other', 'Something else'],
+];
+---
+<section class="quote" id={id}>
+  <div class="quote__head">
+    <h2>{heading}</h2>
+    <p>Three quick steps, about a minute. No obligation.</p>
+  </div>
+  <form class="qf" data-quote novalidate>
+    <ol class="qf__steps" aria-hidden="true"><li class="is-on"><b>1</b>The job</li><li><b>2</b>Your home</li><li><b>3</b>Contact</li></ol>
+
+    <fieldset class="qf__panel is-on" data-step="0">
+      <legend>What would you like cleaned?</legend>
+      <div class="chips">
+        {jobs.map(([v, l]) => (
+          <label class="chip"><input type="checkbox" name="job" value={l} checked={v === preselect || (!preselect && v === 'window-cleaning')} /><span>{l}</span></label>
+        ))}
+      </div>
+      <p class="qf__err" data-err hidden>Pick at least one so the quote covers the right job.</p>
+      <div class="qf__nav"><button class="btn" type="button" data-next>Next: your home</button></div>
+    </fieldset>
+
+    <fieldset class="qf__panel" data-step="1">
+      <legend>Tell us about your home</legend>
+      <div class="seg" role="group" aria-label="Type of home">
+        <span class="seg__l">Home</span>
+        {['Terrace', 'Semi', 'Detached', 'Flat or bungalow'].map((v, i) => (
+          <label><input type="radio" name="home" value={v} checked={i === 0} /><span>{v}</span></label>
+        ))}
+      </div>
+      <label class="range">
+        <span>Windows, roughly <output data-size-out>10 windows</output></span>
+        <input type="range" name="size" min="4" max="30" step="1" value="10" data-size />
+      </label>
+      <div class="seg" role="group" aria-label="How often">
+        <span class="seg__l">How often</span>
+        {['Every 4 weeks', 'Every 8 weeks', 'Just once'].map((v, i) => (
+          <label><input type="radio" name="when" value={v} checked={i === 0} /><span>{v}</span></label>
+        ))}
+      </div>
+      <div class="qf__nav">
+        <button class="btn btn--ghost" type="button" data-back>Back</button>
+        <button class="btn" type="button" data-next>Next: your details</button>
+      </div>
+    </fieldset>
+
+    <fieldset class="qf__panel" data-step="2">
+      <legend>Where should the quote go?</legend>
+      <p class="qf__sum" data-summary></p>
+      <div class="fields">
+        <label>Name<input name="name" autocomplete="name" required /></label>
+        <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+() .-]{7,}" /></label>
+        <label>Postcode <small>(optional)</small><input name="postcode" autocomplete="postal-code" autocapitalize="characters" /></label>
+        <label>Email <small>(optional)</small><input name="email" type="email" autocomplete="email" /></label>
+        <label class="wide">Anything we should know? <small>(optional)</small><textarea name="notes" rows="2" placeholder="Side gate code, a dog in the garden, a tricky back window..."></textarea></label>
+      </div>
+      <p class="qf__err" data-err hidden>Please add your name and a phone number we can reach you on.</p>
+      <div class="qf__nav">
+        <button class="btn btn--ghost" type="button" data-back>Back</button>
+        <button class="btn" type="submit">Send my request</button>
+      </div>
+    </fieldset>
+
+    <div class="qf__done" data-done hidden tabindex="-1">
+      <svg viewBox="0 0 48 48" width="52" height="52" aria-hidden="true"><rect x="3" y="3" width="42" height="42" rx="8" fill="#2f7fa8"/><path d="M14 24.5l7 7 13-14" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3>Clear as that.</h3>
+      <p data-done-sum></p>
+      <p class="qf__demo">This is a concept preview, so nothing was sent. On the live site this request would go straight to {site.short} the moment you press send.</p>
+      <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay} instead</a>
+    </div>
+  </form>
+</section>
+<script>
+  document.querySelectorAll('[data-quote]').forEach((form) => {
+    const panels = [...form.querySelectorAll('[data-step]')];
+    const dots = [...form.querySelectorAll('.qf__steps li')];
+    const size = form.querySelector('[data-size]'), out = form.querySelector('[data-size-out]');
+    const fmt = (n) => (Number(n) >= 30 ? '30+' : n) + ' windows';
+    let step = 0;
+    const jobs = () => [...form.querySelectorAll('input[name=job]:checked')].map((i) => i.value);
+    const summary = () => {
+      const d = new FormData(form);
+      return `${jobs().join(', ')} · ${d.get('home')} · about ${fmt(d.get('size'))} · ${String(d.get('when')).toLowerCase()}`;
+    };
+    function show(n) {
+      step = n;
+      panels.forEach((p, i) => p.classList.toggle('is-on', i === n));
+      dots.forEach((d, i) => { d.classList.toggle('is-on', i === n); d.classList.toggle('is-past', i < n); });
+      if (n === 2) form.querySelector('[data-summary]').textContent = summary();
+      panels[n].querySelector('legend')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function valid(n) {
+      const err = panels[n].querySelector('[data-err]');
+      let ok = true;
+      if (n === 0) ok = jobs().length > 0;
+      if (n === 2) ok = [...panels[2].querySelectorAll('input[required]')].every((i) => i.checkValidity());
+      if (err) err.hidden = ok;
+      return ok;
+    }
+    size.addEventListener('input', () => { out.textContent = fmt(size.value); size.style.setProperty('--p', ((size.value - size.min) / (size.max - size.min)) * 100 + '%'); });
+    size.dispatchEvent(new Event('input'));
+    form.addEventListener('click', (e) => {
+      if (e.target.closest('[data-next]') && valid(step)) show(step + 1);
+      if (e.target.closest('[data-back]')) show(step - 1);
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!valid(2)) return;
+      const name = String(new FormData(form).get('name')).trim().split(' ')[0];
+      panels.forEach((p) => p.classList.remove('is-on'));
+      form.querySelector('.qf__steps').hidden = true;
+      const done = form.querySelector('[data-done]');
+      form.querySelector('[data-done-sum]').textContent = `Thanks, ${name}. Your request: ${summary()}.`;
+      done.hidden = false; done.focus();
+    });
+  });
+</script>

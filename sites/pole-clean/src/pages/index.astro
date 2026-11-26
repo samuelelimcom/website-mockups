@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+import Stage from '../components/Stage.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site, services } from '../data/site.js';
+---
+<Base title={`Window cleaning in ${site.city}`} description={`${site.name}: window, frame and fascia cleaning in ${site.area}, from the ground with a water-fed pole. Rated ${site.rating} from ${site.reviews} Google reviews.`} path="/">
+  <section class="story" id="story">
+    <Stage surface="glass" mode="scroll" track="#story" class="story__stage" label="A 3D slice of a red-brick Stoke terrace with a grimy white uPVC window. A brush on a long water-fed pole scrubs the glass, pure water rinses it, and it dries clear." />
+    <div class="story__chapters">
+      <article class="chapter chapter--hero">
+        <div class="card card--hero">
+          <p class="eyebrow">Window cleaning · {site.city}</p>
+          <h1>Clear windows, from the ground up.</h1>
+          <p>Glass, frames and fascias cleaned with a water-fed pole from the pavement. No ladders against your house, no smears left behind.</p>
+          <div class="actions">
+            <a class="btn" href="#quote">Get a free quote</a>
+            <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+          </div>
+          <a class="rating" href="#reviews"><b>★★★★★</b> {site.rating} from {site.reviews} Google reviews</a>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>01</span> The problem</p>
+          <h2>You notice it when the sun gets low.</h2>
+          <p>Traffic film, rain spots and a winter of dust build up so slowly you stop seeing them. Then one bright afternoon the whole front window turns grey.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>02</span> The scrub</p>
+          <h2>The brush comes up from the pavement.</h2>
+          <p>A telescopic pole reaches upstairs windows from the ground. The brush works across the glass and frame from the top down, loosening everything that has stuck.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>03</span> The rinse</p>
+          <h2>Pure water carries it all away.</h2>
+          <p>The water is filtered until there is nothing left in it. It sheets down the pane and takes the dirt with it, top to bottom.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>04</span> The finish</p>
+          <h2>It dries clear. Nothing left to spot.</h2>
+          <p>With no minerals in the water, there is nothing to leave a mark when it dries. Just glass you can see through again.</p>
+          <div class="actions"><a class="btn" href="#quote">Price my windows</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec why">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Why a water-fed pole</p>
+        <h2>Better for the glass, kinder to the house.</h2>
+        <p class="lede">Many window cleaners have moved from ladders and squeegees to poles and pure water. Here is why it suits a Potteries terrace.</p>
+      </div>
+      <ul class="why__list">
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 34h24M14 34 26 6M24 6h6v6" /><path d="M10 14l6 6M16 14l-6 6" /></svg><h3>No ladders on the house</h3><p>Nothing leaning on your gutter, frames or flower beds.</p></li>
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6c6 8 10 13 10 18a10 10 0 0 1-20 0c0-5 4-10 10-18z" /><path d="M15 25a5 5 0 0 0 5 5" /></svg><h3>Pure water, no residue</h3><p>Filtered water dries without spots, so there is no soap to streak.</p></li>
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="6" width="26" height="28" rx="2" /><path d="M20 6v28M7 20h26" /></svg><h3>Frames done too</h3><p>The brush passes over the frames and sills as it cleans the glass.</p></li>
+        <li><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 30h28M10 30V16l10-8 10 8v14" /><path d="M16 30v-8h8v8" /></svg><h3>Reaches the top floor</h3><p>Upstairs windows and the roofline are cleaned from the ground.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec band" id="services">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Services</p>
+        <h2>From the glass to the gutter line.</h2>
+      </div>
+      <div class="svcs">
+        {services.map((s, i) => (
+          <a class="svc" href={`/services/${s.slug}/`}>
+            <div class={`pane pane--${s.surface}`}><span>0{i + 1}</span></div>
+            <div class="svc__body">
+              <span class="tag">{s.kicker}</span>
+              <h3>{s.name}</h3>
+              <p>{s.short}</p>
+              <span class="svc__go">How it's done →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <section class="sec">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">How it works</p>
+        <h2>From "I can't see out" to sorted.</h2>
+        <ol class="steps steps--stack">
+          <li><h3>Tell us about your home</h3><p>A minute on the form, or a quick call to {site.phoneDisplay}.</p></li>
+          <li><h3>Get a clear price</h3><p>For the windows and extras you asked about, before anyone turns up.</p></li>
+          <li><h3>Look out and enjoy it</h3><p>As a regular round or a one-off clean, whichever suits you.</p></li>
+        </ol>
+      </div>
+      <QuoteForm />
+    </div>
+  </section>
+</Base>
