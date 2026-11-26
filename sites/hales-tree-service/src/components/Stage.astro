@@ -1,0 +1,21 @@
+---
+// Lazy 3D stage. The canvas only boots after the page has loaded, so it never
+// competes with first paint. Until then (and if WebGL is missing) the CSS
+// poster behind it is what people see.
+const { scene = 'removal', track = '', label = '3D model', class: cls = '' } = Astro.props;
+---
+<div class={`stage ${cls}`} data-stage data-scene={scene} data-track={track}>
+  <canvas role="img" aria-label={label}></canvas>
+  <p class="stage__hint" data-hint aria-hidden="true">
+    <span class="fine">Move across it to walk around the tree</span>
+    <span class="coarse">Swipe sideways to walk around the tree</span>
+  </p>
+</div>
+<script>
+  const stages = document.querySelectorAll('[data-stage]');
+  if (stages.length) {
+    const boot = () => import('../scenes/tree.js').then((m) => stages.forEach((el) => m.mount(el))).catch(() => {});
+    const start = () => ('requestIdleCallback' in window ? requestIdleCallback(boot, { timeout: 1200 }) : setTimeout(boot, 150));
+    if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+  }
+</script>

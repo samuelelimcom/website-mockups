@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import Stage from '../components/Stage.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site, services } from '../data/site.js';
+---
+<Base title={`Tree removal, trimming & stump grinding in ${site.city}, ${site.region}`} description={`${site.name}: tree removal, trimming and stump grinding in ${site.area}. Rated ${site.rating} on Google.`} path="/">
+  <section class="story" id="story">
+    <Stage scene="story" track="#story" class="story__stage" label="A 3D yard with a large hardwood whose limb reaches over a house roof. As you scroll, the limb is lowered, the tree comes down in rounds and the stump is ground to chips." />
+    <div class="story__chapters">
+      <article class="chapter chapter--hero">
+        <div class="card">
+          <p class="eyebrow">Tree service · {site.city}, {site.region}</p>
+          <h1>The tree comes down in pieces. Your yard stays in one.</h1>
+          <p>Tree removal, trimming and stump grinding across {site.area}.</p>
+          <div class="actions">
+            <a class="btn" href="#quote">Get a free estimate</a>
+            <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+          </div>
+          <a class="rating" href="#reviews"><b>★★★★½</b> {site.rating} from {site.reviews} Google reviews</a>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span class="ringno">1</span> The limb you keep looking at</p>
+          <h2>After every storm, you check that one branch.</h2>
+          <p>A heavy limb over the roof is how most tree damage starts. Ice, a summer gust or just its own weight, and it comes down where nobody wants it.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span class="ringno">2</span> Lowered, not dropped</p>
+          <h2>It comes down a piece at a time, on a rope.</h2>
+          <p>Next to a house there is no room to fell a tree in one go. The limb is cut and lowered, then the crown, then the trunk in rounds, each one landing where it was meant to.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span class="ringno">3</span> Then the stump goes too</p>
+          <h2>All that is left is a patch of fresh chips.</h2>
+          <p>Add stump grinding and even that comes out, ground below the grass, ready for soil and seed.</p>
+          <div class="actions"><a class="btn" href="#quote">Describe your tree</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Worth a look</p>
+        <h2>Four signs a tree needs attention before the next storm.</h2>
+        <p class="lede">You do not need to be an arborist to spot these from the yard. If you see one, it is worth having someone look.</p>
+      </div>
+      <ol class="signs">
+        <li><h3>Dead wood in the crown</h3><p>Grey, bare branches in a summer canopy are the first to fall in wind and ice.</p></li>
+        <li><h3>Cracks or splits</h3><p>Where two big stems meet in a tight V, or a crack runs down the trunk.</p></li>
+        <li><h3>A new lean</h3><p>A tree that has always leaned is one thing. Soil heaving on one side is another.</p></li>
+        <li><h3>Mushrooms at the base</h3><p>Fungus on the trunk or roots can mean decay inside, where you cannot see it.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec band" id="services">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Services</p>
+        <h2>Whatever the tree needs, start to finish.</h2>
+      </div>
+      <div class="tickets">
+        {services.map((s, i) => (
+          <a class="ticket" href={`/services/${s.slug}/`}>
+            <span class="ticket__no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="ticket__body">
+              <span class="tag">{s.kicker}</span>
+              <h3>{s.name}</h3>
+              <p>{s.short}</p>
+            </div>
+            <ul class="ticket__inc">{s.includes.map((x) => <li>{x}</li>)}</ul>
+            <span class="ticket__go">How it is done →</span>
+          </a>
+        ))}
+      </div>
+      <p class="note">Storm damage? Choose "Storm damage" in the estimate form and say what came down.</p>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <section class="sec">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">How it works</p>
+        <h2>From "that tree worries me" to a clear yard.</h2>
+        <ol class="steps steps--stack">
+          <li><h3>Describe the tree</h3><p>A minute on the form, or a quick call to {site.phoneDisplay}.</p></li>
+          <li><h3>Get your estimate</h3><p>What will be done, what will be hauled away, and what it costs, before any work starts.</p></li>
+          <li><h3>Work day</h3><p>The tree comes down in pieces, and the yard is cleaned up afterwards.</p></li>
+        </ol>
+      </div>
+      <QuoteForm />
+    </div>
+  </section>
+</Base>

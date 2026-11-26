@@ -1,0 +1,17 @@
+---
+import { site } from '../data/site.js';
+---
+<section class="reviews" id="reviews">
+  <div class="wrap reviews__in">
+    <div class="reviews__ring" aria-label={`${site.rating} out of 5 stars on Google`}>
+      <span>{site.rating}</span>
+      <small>out of 5 on Google</small>
+    </div>
+    <div class="reviews__copy">
+      <p class="eyebrow eyebrow--light">What neighbours say</p>
+      <h2>{site.reviews} Bowling Green customers have rated {site.short} on Google.</h2>
+      <p>Their words are better than ours, so read them where they wrote them.</p>
+      <a class="btn btn--hi" href={site.gbp} rel="noopener">Read the Google reviews</a>
+    </div>
+  </div>
+</section>
