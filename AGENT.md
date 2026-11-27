@@ -191,12 +191,10 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   - Subject: names the problem and the solution, sentence case, no "Re:". Default:
     `You don't have a website, that's why I made you one`. Small variations are fine
     (e.g. `<Business> has no website, so I made you one`) so not every email is identical.
-  - Body: **1 to 2 sentences, then the question**, using only true details (their rating and
-    review count from the sheet, their trade and town). Pattern:
-    `<Business> has a <rating> rating from <n> Google reviews but no website, so people searching for a
-    <trade> in <town> find your competitors instead. I've built a mockup website design for
-    your business to win those customers and give you credibility against competitors. Want to see it?`
-  - Last line, always (required by law in the US, UK and AU): `Not interested? Reply "no thanks" and I won't email again.`
+  - Body: **1 to 2 short sentences in total, nothing else** (no P.S., no opt-out line), using
+    only true details (their rating and review count from the sheet, their trade and town). Pattern:
+    `<Business> has a <rating> rating from <n> Google reviews but no website, so I built you a
+    mockup site to win more <trade> customers in <town> and stand out from competitors. Want to see it?`
   - Greeting `Hi there,` (or the owner's first name only if a public source names them).
     No sign-off or name: send with `includeSignature: true` so Samuel's Gmail signature
     (with his postal address) is added.
