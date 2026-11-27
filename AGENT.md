@@ -226,10 +226,9 @@ Only the reply drafts in B6 carry the signature.
   sending; an out-of-office auto-reply does not count). Oldest first, at most 2 per run.
 - Send with `send_message`: `replyThreadId` = the outreach thread id (from P), `to` = the
   address in D, the same subject as the cold email, plain `body`, `includeSignature: false`.
-- Body: `Hi there,` then 1 to 2 sentences, then the opt-out and address lines. Pattern:
+- Body: `Hi there,` then 1 to 2 sentences, nothing else. Pattern:
   `By the way, the website I made for <Business> is interactive, so visitors stay on it longer
   and are more likely to get in touch than on a basic website. Want me to walk you through it?`
-  Last two lines: `Reply 'stop' to opt out.` then `Samuel Lim · Quezon City 1117, Philippines`
 - Then fill W (UTC date and time), set J `Followed up <date>`, and log it.
 
 ### New cold emails
@@ -244,14 +243,12 @@ Only the reply drafts in B6 carry the signature.
     `You don't have a website, that's why I made you one`. Small variations are fine
     (e.g. `<Business> has no website, so I made you one`) so not every email is identical.
   - Greeting `Hi there,` (or the owner's first name only if a public source names them).
-  - Body: **1 to 2 short sentences in total**, then the opt-out and address lines, nothing else. Pattern:
+  - Body: **1 to 2 short sentences in total**, nothing else. Pattern:
     `<Business> has good ratings but no website, so I built you a mockup site to win more
     <trade> customers in <town> and stand out from competitors. Want to see it?`
     Only say "good ratings" when the Google rating in F is 4.3 or higher; below that, say
     `has <n> Google reviews but no website` instead. Trade and town must be true.
-  - Last two lines, always: `Reply 'stop' to opt out.` then
-    `Samuel Lim · Quezon City 1117, Philippines`
-  - No sign-off and no name.
+  - No opt-out line, no address line, no sign-off and no name.
 - Send it with `send_message` as plain `body`, `includeSignature: false`. Then fill N, O,
   P (`<thread link> (thread <threadId>)`, the follow-up needs the thread id),
   U (UTC date and time) and J `Emailed <date>`.
