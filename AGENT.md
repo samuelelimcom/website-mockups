@@ -33,7 +33,7 @@ Row 1 holds headers, the log in Q1 and the switch in S1:T1. Write headers `Outre
 and `Reply` in V1 if they are missing.
 
 ### Status values (column J)
-`Queued` (verified, not emailed) · `Emailed <date>` · `Interested <date>` ·
+`Queued` (verified, not emailed) · `Sending <time>` · `Emailed <date>` · `Interested <date>` · `Building <time>` ·
 `Reply draft ready <date>` · `Do not contact` · `Bounced` · `Skipped: <reason>` · `Failed: <reason>`.
 Older rows with `Draft ready <date>` are from the previous workflow: leave them alone.
 
@@ -93,6 +93,8 @@ Older rows with `Draft ready <date>` are from the previous workflow: leave them 
     interest. J `Interested <date>`, V `<date>: <summary>`, then send Samuel a notification:
     `<Business> replied: "<short quote>". Building the mockup now.`
 - Build for **at most one** `Interested` row per run (oldest first). Others wait for the next run.
+  Claim it first by setting J to `Building <UTC date and time>`, so an overlapping run skips it.
+  A `Building` claim older than 3 hours is stale: treat that row as `Interested` again.
 
 ### Building the mockup for an interested prospect
 Do B1 to B5 for that row. Use `sites/<slug>/` with a short slug of the business name. If the
@@ -185,6 +187,10 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   than 1 in 10 of the emails sent in the last 7 days. UK: only rows marked as a limited company
   (PECR); never UK sole traders. AU: only rows whose Notes say the address is published by the
   business for business enquiries (Spam Act inferred consent).
+- Claim each row before sending: set J to `Sending <UTC date and time>`, then re-read the row;
+  if another run changed it in the meantime, leave it. A `Sending` claim older than 1 hour with
+  no U value means a run died mid-way: check `to:<address> in:sent`; if sent, fill the row as
+  sent, otherwise set it back to `Queued`.
 - Right before sending, re-check in Gmail that nothing has ever been sent to that address
   (`to:<address> in:sent`). If something has, set `Skipped: already emailed` and take the next row.
 - Write the email. **Attention-grabbing, plain text, no links, no attachments:**
@@ -200,7 +206,7 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   - Greeting `Hi there,` (or the owner's first name only if a public source names them).
     No sign-off or name: send with `includeSignature: true` so Samuel's Gmail signature
     (with his postal address) is added.
-- Send it with the Gmail send tool as plain `body`. Then fill N, O, P (thread link),
+- Send it with the Gmail send tool (`send_message`) as plain `body`. Then fill N, O, P (thread link),
   U (UTC date and time) and J `Emailed <date>`.
 - If the send tool is not available or fails, do not create a draft instead: record it in Q1
   and stop sending for this run.
