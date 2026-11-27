@@ -1,0 +1,16 @@
+---
+import { site } from '../data/site.js';
+---
+<section class="reviews" id="reviews">
+  <div class="wrap reviews__in">
+    <div class="reviews__score" aria-label={`${site.rating} out of 5 stars on Google`}>
+      <span>{site.rating}</span>
+      <small>out of 5 on Google</small>
+    </div>
+    <div>
+      <p class="eyebrow eyebrow--light">Word around town</p>
+      <h2>{site.reviews} neighbors have rated {site.short} on Google. Read what they said in their own words.</h2>
+      <a class="btn btn--light" href={site.gbp} rel="noopener">Read the Google reviews</a>
+    </div>
+  </div>
+</section>

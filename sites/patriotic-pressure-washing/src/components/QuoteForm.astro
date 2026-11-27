@@ -1,0 +1,133 @@
+---
+// Multi-step estimate request. DEMO ONLY: it validates and shows a success state
+// but sends nothing, because this preview is not operated by the business.
+import { site } from '../data/site.js';
+const { preselect = '', heading = 'Get a free estimate', id = 'quote' } = Astro.props;
+const jobs = [
+  ['deck', 'Deck or porch'],
+  ['fence', 'Fence'],
+  ['house', 'House (siding or brick)'],
+  ['driveway', 'Driveway or walkway'],
+  ['other', 'Something else'],
+];
+const sizes = [['Small', 'a porch, a short walk'], ['Medium', 'a typical deck or one-car drive'], ['Large', 'a big deck, long fence, whole house']];
+---
+<section class="quote" id={id}>
+  <div class="quote__head">
+    <p class="quote__no">Estimate request</p>
+    <h2>{heading}</h2>
+    <p>Three short steps. You will get a price, not a sales call.</p>
+  </div>
+  <form class="qf" data-quote novalidate>
+    <ol class="qf__steps" aria-hidden="true"><li class="is-on"><b>1</b> The job</li><li><b>2</b> The details</li><li><b>3</b> You</li></ol>
+
+    <fieldset class="qf__panel is-on" data-step="0">
+      <legend>What needs washing?</legend>
+      <div class="chips">
+        {jobs.map(([v, l]) => (
+          <label class="chip"><input type="checkbox" name="job" value={l} checked={v === preselect} /><span>{l}</span></label>
+        ))}
+      </div>
+      <p class="qf__err" data-err hidden>Pick at least one so the estimate covers the right thing.</p>
+      <div class="qf__nav"><button class="btn" type="button" data-next>Next: the details</button></div>
+    </fieldset>
+
+    <fieldset class="qf__panel" data-step="1">
+      <legend>A little more about it</legend>
+      <div class="seg" role="group" aria-label="How big is the job">
+        <span class="seg__l">How big, roughly?</span>
+        {sizes.map(([v, hint], i) => (
+          <label class="seg__big"><input type="radio" name="size" value={v} checked={i === 1} /><span><b>{v}</b><small>{hint}</small></span></label>
+        ))}
+      </div>
+      <div class="seg" role="group" aria-label="Last cleaned">
+        <span class="seg__l">When was it last cleaned?</span>
+        {['Never / not sure', 'A year or two ago', 'Recently'].map((v, i) => (
+          <label><input type="radio" name="last" value={v} checked={i === 0} /><span>{v}</span></label>
+        ))}
+      </div>
+      <div class="seg" role="group" aria-label="Timing">
+        <span class="seg__l">Any deadline?</span>
+        {['Before a date', 'In the next few weeks', 'No rush'].map((v, i) => (
+          <label><input type="radio" name="when" value={v} checked={i === 1} /><span>{v}</span></label>
+        ))}
+      </div>
+      <div class="qf__nav">
+        <button class="btn btn--ghost" type="button" data-back>Back</button>
+        <button class="btn" type="button" data-next>Next: your details</button>
+      </div>
+    </fieldset>
+
+    <fieldset class="qf__panel" data-step="2">
+      <legend>Who should we call?</legend>
+      <p class="qf__sum" data-summary></p>
+      <div class="fields">
+        <label>Name<input name="name" autocomplete="name" required /></label>
+        <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+() .-]{7,}" /></label>
+        <label class="wide">Street or neighborhood <small>(optional)</small><input name="where" autocomplete="street-address" /></label>
+        <label class="wide">Anything we should know? <small>(optional)</small><textarea name="notes" rows="2" placeholder="Gate code, dogs in the yard, the stain you are worried about..."></textarea></label>
+      </div>
+      <div class="seg" role="group" aria-label="Best time to call">
+        <span class="seg__l">Best time to call</span>
+        {['Morning', 'Afternoon', 'Evening'].map((v, i) => (
+          <label><input type="radio" name="call" value={v} checked={i === 1} /><span>{v}</span></label>
+        ))}
+      </div>
+      <p class="qf__err" data-err hidden>Please add your name and a phone number we can reach you on.</p>
+      <div class="qf__nav">
+        <button class="btn btn--ghost" type="button" data-back>Back</button>
+        <button class="btn" type="submit">Request my estimate</button>
+      </div>
+    </fieldset>
+
+    <div class="qf__done" data-done hidden tabindex="-1">
+      <svg viewBox="0 0 48 48" width="52" height="52" aria-hidden="true"><rect x="2" y="2" width="44" height="44" fill="#a8322a"/><path d="M14 24.500l7 7 13-14" fill="none" stroke="#f3ede1" stroke-width="4" stroke-linecap="square"/></svg>
+      <h3>That is all it would take.</h3>
+      <p data-done-sum></p>
+      <p class="qf__demo">This is a concept preview, so nothing was sent. On the live site this request would reach {site.short} the moment you press the button.</p>
+      <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay} instead</a>
+    </div>
+  </form>
+</section>
+<script>
+  document.querySelectorAll('[data-quote]').forEach((form) => {
+    const panels = [...form.querySelectorAll('[data-step]')];
+    const dots = [...form.querySelectorAll('.qf__steps li')];
+    let step = 0;
+    const jobs = () => [...form.querySelectorAll('input[name=job]:checked')].map((i) => i.value);
+    const summary = () => {
+      const d = new FormData(form);
+      return `${jobs().join(', ')} · ${String(d.get('size')).toLowerCase()} job · last cleaned: ${String(d.get('last')).toLowerCase()} · ${String(d.get('when')).toLowerCase()}`;
+    };
+    function show(n) {
+      step = n;
+      panels.forEach((p, i) => p.classList.toggle('is-on', i === n));
+      dots.forEach((d, i) => { d.classList.toggle('is-on', i === n); d.classList.toggle('is-past', i < n); });
+      if (n === 2) form.querySelector('[data-summary]').textContent = summary();
+      panels[n].querySelector('legend')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function valid(n) {
+      const err = panels[n].querySelector('[data-err]');
+      let ok = true;
+      if (n === 0) ok = jobs().length > 0;
+      if (n === 2) ok = [...panels[2].querySelectorAll('input[required]')].every((i) => i.checkValidity());
+      if (err) err.hidden = ok;
+      return ok;
+    }
+    form.addEventListener('click', (e) => {
+      if (e.target.closest('[data-next]') && valid(step)) show(step + 1);
+      if (e.target.closest('[data-back]')) show(step - 1);
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!valid(2)) return;
+      const d = new FormData(form);
+      const name = String(d.get('name')).trim().split(' ')[0];
+      panels.forEach((p) => p.classList.remove('is-on'));
+      form.querySelector('.qf__steps').hidden = true;
+      const done = form.querySelector('[data-done]');
+      form.querySelector('[data-done-sum]').textContent = `Thanks, ${name}. ${summary()}. Best time to call: ${String(d.get('call')).toLowerCase()}.`;
+      done.hidden = false; done.focus();
+    });
+  });
+</script>
