@@ -1,0 +1,33 @@
+---
+import { site, services } from '../data/site.js';
+const { path = '/' } = Astro.props;
+---
+<header class="top">
+  <a class="brand" href="/" aria-label={`${site.name} home`}>
+    <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+      <circle cx="16" cy="16" r="14.5" fill="#c98a46"/>
+      <circle cx="16.6" cy="15.6" r="10.6" fill="none" stroke="#8a5a2b" stroke-width="1.3"/>
+      <circle cx="16.9" cy="15.3" r="7" fill="none" stroke="#8a5a2b" stroke-width="1.2"/>
+      <circle cx="17.1" cy="15.1" r="3.6" fill="none" stroke="#8a5a2b" stroke-width="1.1"/>
+      <circle cx="16" cy="16" r="14.5" fill="none" stroke="#3a2a1a" stroke-width="2"/>
+    </svg>
+    <span><b>{site.short}</b><i>{site.tagline} · {site.city}</i></span>
+  </a>
+  <nav class="nav" id="nav" aria-label="Main">
+    {services.map((s) => (
+      <a href={`/services/${s.slug}/`} aria-current={path === `/services/${s.slug}/` ? 'page' : undefined}>{s.name}</a>
+    ))}
+    <a href="/#reviews">Reviews</a>
+    <a class="btn btn--sm" href="/quote/">Free estimate</a>
+  </nav>
+  <a class="top__call" href={`tel:${site.phoneHref}`}><span class="sr">Call </span>{site.phoneDisplay}</a>
+  <button class="menu" type="button" aria-controls="nav" aria-expanded="false"><span></span><span></span><i class="sr">Menu</i></button>
+</header>
+<script>
+  const btn = document.querySelector('.menu'), nav = document.getElementById('nav');
+  btn?.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  nav?.addEventListener('click', (e) => { if (e.target.closest('a')) { nav.classList.remove('is-open'); btn.setAttribute('aria-expanded', 'false'); } });
+</script>
