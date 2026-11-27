@@ -193,10 +193,12 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
 
 ## 2. Outreach: send 2 emails at random times
 - Count rows whose U is today's UTC date. If 50 or more, skip this step.
-- **Plan the send times** right after step 1: find the most recent time in column U and run
-  `node tools/send-plan.mjs --last <that time>`. It prints `SEND1=` (3 to 22 minutes from now,
+- **Plan the send times** right after step 1: take the latest of (a) the most recent time in
+  column U and (b) any planned send time an earlier run wrote in Q1 that is still in the future
+  (a long build can make runs overlap), and run `node tools/send-plan.mjs --last <that time>`. It prints `SEND1=` (3 to 22 minutes from now,
   and at least 6 minutes after the last email) and `SEND2=` (9 to 41 minutes after SEND1, within
-  56 minutes of now), with a gap that differs from the previous one. Write both times in the log.
+  56 minutes of now), with a gap that differs from the previous one. Write both times in Q1 straight away, as
+  `<date> run planned sends: <SEND1>, <SEND2>`.
   Send email 1 at SEND1 and email 2 at SEND2, never earlier, never both at once. If a step takes
   you past a send time, send as soon as you are free, then keep the next gap as planned.
   Do not invent your own times or round them to neat numbers.
