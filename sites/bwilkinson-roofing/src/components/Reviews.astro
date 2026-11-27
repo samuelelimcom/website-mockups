@@ -1,0 +1,20 @@
+---
+import { site } from '../data/site.js';
+---
+<section class="reviews" id="reviews">
+  <div class="wrap reviews__in">
+    <div class="reviews__badge" aria-label={`${site.rating} out of 5 stars from ${site.reviews} Google reviews`}>
+      <span class="reviews__num">{site.rating}</span>
+      <svg viewBox="0 0 120 24" width="132" height="26" aria-hidden="true">
+        {[0, 1, 2, 3, 4].map((i) => <path transform={`translate(${i * 24} 0)`} d="M12 1.8l3.1 6.5 7.1.9-5.2 4.9 1.3 7-6.3-3.4-6.3 3.4 1.3-7L1.8 9.2l7.1-.9z" fill="#f1ece3"/>)}
+      </svg>
+      <span class="reviews__count">{site.reviews} Google reviews</span>
+    </div>
+    <div class="reviews__text">
+      <p class="eyebrow eyebrow--light">What people round here say</p>
+      <h2>{site.reviews} customers have rated {site.short} on Google. The average is {site.rating} out of 5.</h2>
+      <p>The best way to choose a roofer is to ask the people whose roofs they have already done. Their reviews are on Google, unedited.</p>
+      <a class="btn btn--light" href={site.gbp} rel="noopener">Read the reviews on Google</a>
+    </div>
+  </div>
+</section>

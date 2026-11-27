@@ -1,0 +1,114 @@
+---
+import Base from '../layouts/Base.astro';
+import Stage from '../components/Stage.astro';
+import Reviews from '../components/Reviews.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site, services } from '../data/site.js';
+const layers = [
+  ['Slates', 'Laid in overlapping courses so each one sheds water onto the two below it.'],
+  ['Battens', 'Timber laths the slates are nailed to, set to the right gauge for the slate.'],
+  ['Membrane', 'The second line of defence under the slates, carrying any wind-blown rain to the gutter.'],
+  ['Lead', 'Dressed over every joint where the roof meets a chimney, wall or dormer.'],
+  ['Pointing', 'The mortar in the chimney and verges that stops water soaking into the brick.'],
+];
+---
+<Base title={`Roofer in ${site.city}, ${site.town}`} description={`${site.name}: roof repairs, leadwork and chimney repairs in ${site.area}. Rated ${site.rating} on Google from ${site.reviews} reviews.`} path="/">
+  <section class="story" id="story">
+    <Stage surface="roof" mode="scroll" track="#story" class="story__stage" hint={['Move over the roof to inspect it', 'Tap the slates to lift and check them']} label="A 3D cutaway of a terrace roof in the rain: brick wall, slates in courses, a chimney stack with lead flashing. As you scroll the slipped slates go back, the lead is dressed down, the stack is repointed and the sky clears." />
+    <div class="story__chapters">
+      <article class="chapter chapter--hero">
+        <div class="card card--hero">
+          <p class="eyebrow">Roofing · Leadwork · Chimneys</p>
+          <h1>Keeping {site.town} weather on the outside.</h1>
+          <p>Slipped slates, lifted lead and tired chimneys put right by {site.short}, a local roofer based in {site.city}.</p>
+          <div class="actions">
+            <a class="btn" href="#quote">Get a free quote</a>
+            <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+          </div>
+          <a class="rating" href="#reviews"><b>★★★★★</b> {site.rating} from {site.reviews} Google reviews</a>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>01</span> The problem</p>
+          <h2>Rain only needs one gap.</h2>
+          <p>A gale lifts a slate, a nail rusts through, a joint in the chimney washes out. On a wet night the water finds it, and the first you know is a stain on the bedroom ceiling.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>02</span> The slates</p>
+          <h2>Back in their course.</h2>
+          <p>Each slate overlaps the two below it. Slipped and missing ones are re-fixed so the overlap is back and water runs down the roof, not under it.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>03</span> Lead &amp; chimney</p>
+          <h2>The joints rain looks for first.</h2>
+          <p>Lead is dressed tight where the roof meets the stack, and crumbling joints in the brickwork are raked out and repointed course by course.</p>
+        </div>
+      </article>
+      <article class="chapter">
+        <div class="card">
+          <p class="num"><span>04</span> Dry</p>
+          <h2>Let it rain.</h2>
+          <p>A roof that does its job quietly, whatever the Lancashire weather does next.</p>
+          <div class="actions"><a class="btn" href="#quote">Price my roof</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec layers">
+    <div class="wrap layers__in">
+      <div class="sec__head">
+        <p class="eyebrow">What keeps a roof dry</p>
+        <h2>Five layers. Any one of them can let you down.</h2>
+        <p class="lede">Most leaks are not a whole-roof problem. They are one layer failing in one place. Knowing which is how you avoid paying for work you do not need.</p>
+      </div>
+      <ol class="layers__list">
+        {layers.map(([t, d], i) => <li style={`--i:${i}`}><span class="layers__n">{String(i + 1).padStart(2, '0')}</span><h3>{t}</h3><p>{d}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec band" id="services">
+    <div class="wrap">
+      <div class="sec__head">
+        <p class="eyebrow">Services</p>
+        <h2>What does your roof need?</h2>
+      </div>
+      <div class="svcs">
+        {services.map((s, i) => (
+          <a class="svc" href={`/services/${s.slug}/`}>
+            <div class={`swatch swatch--${s.surface}`}><span>0{i + 1}</span></div>
+            <div class="svc__body">
+              <span class="tag">{s.kicker}</span>
+              <h3>{s.name}</h3>
+              <p>{s.short}</p>
+              <span class="svc__go">See how it's done →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Reviews />
+
+  <section class="sec">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">How it works</p>
+        <h2>From "there's a slate on the path" to sorted.</h2>
+        <ol class="steps steps--stack">
+          <li><h3>Tell us what you can see</h3><p>A minute on the form, or ring {site.phoneDisplay}.</p></li>
+          <li><h3>We take a proper look</h3><p>And explain what is wrong in plain words, before any work is agreed.</p></li>
+          <li><h3>A clear quote, then the work</h3><p>For the job that needs doing, nothing added on.</p></li>
+        </ol>
+      </div>
+      <QuoteForm />
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import QuoteForm from '../components/QuoteForm.astro';
+import { site } from '../data/site.js';
+---
+<Base title="Get a free roofing quote" description={`Request a free quote for roof repairs, leadwork or chimney repairs from ${site.name} in ${site.city}, ${site.town}.`} path="/quote/">
+  <section class="sec sec--quote">
+    <div class="wrap split">
+      <div class="sec__head">
+        <p class="eyebrow">Free quote · {site.city}, {site.town}</p>
+        <h1>Tell us what you can see. We'll tell you what it needs.</h1>
+        <p class="lede">Rather talk it through? Ring <a href={`tel:${site.phoneHref}`}><strong>{site.phoneDisplay}</strong></a>.</p>
+        <a class="rating" href={site.gbp} rel="noopener"><b>★★★★★</b> {site.rating} from {site.reviews} Google reviews</a>
+      </div>
+      <QuoteForm heading="Your free quote" />
+    </div>
+  </section>
+</Base>

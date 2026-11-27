@@ -1,0 +1,36 @@
+---
+import '@fontsource-variable/schibsted-grotesk/wght.css';
+import '../styles/global.css';
+import fontUrl from '@fontsource-variable/schibsted-grotesk/files/schibsted-grotesk-latin-wght-normal.woff2?url';
+import { site } from '../data/site.js';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+const { title, description, path = '/' } = Astro.props;
+const fullTitle = `${title} | ${site.name} (concept preview)`;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1e2830" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <p class="concept">
+      <strong>Concept preview</strong> designed for {site.name} by{' '}<a href={site.designer.url}>{site.designer.name}</a>. Not yet the official website.
+    </p>
+    <Header path={path} />
+    <main id="main"><slot /></main>
+    <Footer />
+    <div class="dock" aria-label="Quick actions">
+      <a class="btn btn--ghost" href={`tel:${site.phoneHref}`}>Call {site.phoneDisplay}</a>
+      <a class="btn" href="/quote/">Free quote</a>
+    </div>
+  </body>
+</html>
