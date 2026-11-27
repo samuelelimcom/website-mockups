@@ -1,0 +1,18 @@
+---
+import { site } from '../data/site.js';
+---
+<section class="reviews" id="reviews">
+  <div class="wrap reviews__in">
+    <div class="reviews__pane" aria-label={`${site.rating} out of 5 stars from ${site.reviews} Google reviews`}>
+      <span class="reviews__num">{site.rating}</span>
+      <span class="reviews__stars" aria-hidden="true">★★★★★</span>
+      <span class="reviews__count">{site.reviews} Google reviews</span>
+    </div>
+    <div class="reviews__text">
+      <p class="eyebrow eyebrow--light">What the neighbours say</p>
+      <h2>{site.reviews} customers have rated {site.short} on Google. The average is {site.rating} out of 5.</h2>
+      <p>That is a lot of front windows. Rather than pick our favourite quotes, here is the whole lot, unedited.</p>
+      <a class="btn btn--light" href={site.gbp} rel="noopener">Read the reviews on Google</a>
+    </div>
+  </div>
+</section>
