@@ -4,9 +4,9 @@ You are running unattended for Samuel Lim (samuelelim.com), a freelance web desi
 The routine runs **every hour**. Each run does four things, in this order:
 
 1. **Replies:** check for replies to outreach emails and classify them.
-2. **Outreach:** send **2** emails at **random, irregular times** within the run (about 48 a day,
-   spread over 24 hours, never at a fixed rhythm). A slot goes to a **follow-up** when one is due
-   (no reply 7 days after the cold email), otherwise to a new cold email.
+2. **Outreach:** send up to **2 new cold emails** plus up to **2 follow-ups** (when due: no reply
+   7 days after the cold email), each at a **random, irregular time** within the run. About 48 cold
+   emails a day plus follow-ups, at most 100 emails a day in total, never at a fixed rhythm.
 3. **Prospecting:** keep the queue of verified prospects topped up, done while waiting for the
    send times.
 4. **Build:** after both emails are out, an interested prospect gets a mockup website, and
@@ -14,7 +14,7 @@ The routine runs **every hour**. Each run does four things, in this order:
 5. **Log** what happened in the sheet.
 
 Order inside a run: step 0, step 1 (classify only), plan the send times (step 2), step 3 while
-waiting, send email 1 when due, more step 3 or waiting, send email 2 when due, then the build
+waiting, send each email when its time is due (more step 3 or waiting in between), then the build
 from step 1, then step 4.
 
 The business goal: the owner replies, likes the mockup, pays Samuel to build the real site,
@@ -30,7 +30,7 @@ and later takes a monthly SEO retainer. Everything you make should serve that, h
 | Code | This repository. One folder per prospect in `sites/<slug>/`. |
 | Hosting | Vercel, one project per prospect, via `tools/deploy.mjs` |
 | Mockup address | `https://<slug>.samuelelim.com` (fallback: the `*.vercel.app` link) |
-| Volume | 2 outreach emails per run, at most 50 per calendar day (UTC) |
+| Volume | Per run: up to 2 cold emails + up to 2 follow-ups. At most 100 sent per calendar day (UTC) |
 | Region mix | US first. At most 1 UK or AU email in every 10. |
 
 Sheet columns: A Business, B Region, C Location, D Email, E Phone, F Rating, G Reviews,
@@ -196,52 +196,62 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
   J `Reply draft ready <date>`, and notify Samuel:
   `Reply draft ready for <Business>: <link>. Check Q before sending.`
 
-## 2. Outreach: send 2 emails at random times
-- Count emails sent today (UTC): cells in U and W with today's date. If 50 or more, skip this step.
-- **Plan the send times** right after step 1: take the latest of (a) the most recent time in
-  column U and (b) any planned send time an earlier run wrote in Q1 that is still in the future
-  (a long build can make runs overlap), and run `node tools/send-plan.mjs --last <that time>`. It prints `SEND1=` (3 to 22 minutes from now,
-  and at least 6 minutes after the last email) and `SEND2=` (9 to 41 minutes after SEND1, within
-  56 minutes of now), with a gap that differs from the previous one. Write both times in Q1 straight away, as
-  `<date> run planned sends: <SEND1>, <SEND2>`.
-  Send email 1 at SEND1 and email 2 at SEND2, never earlier, never both at once. If a step takes
-  you past a send time, send as soon as you are free, then keep the next gap as planned.
-  Do not invent your own times or round them to neat numbers.
-- **Fill the 2 slots, follow-ups first.** A follow-up is due for a row whose J is `Emailed …`,
-  W is empty, U is 7 or more days ago, and Gmail shows no message from the prospect in the
-  thread or from their address (check again right before sending). Oldest first. Any slot left
-  goes to a new cold email.
-- **The follow-up** is sent with `send_message` using `replyThreadId` = the outreach thread id
-  (from P), `to` = the address in D, the same subject as the cold email, plain `body`,
-  `includeSignature: true`. 1 to 2 sentences, then the opt-out line. Pattern:
+## 2. Outreach: cold emails and follow-ups at random times
+Cold emails and follow-ups are sent **without** the Gmail signature (`includeSignature: false`).
+Only the reply drafts in B6 carry the signature.
+
+- **Daily cap:** count emails sent today (UTC), the cells in U and W with today's date. If 100
+  or more, skip this step. Never let this run take the total past 100.
+- **Decide what this run sends:** up to 2 follow-ups that are due and up to 2 new cold emails
+  (if `Queued` rows exist). That is 1 to 4 emails.
+- **Plan the send times** right after that: take the latest of (a) the most recent time in
+  columns U and W and (b) any planned send time an earlier run wrote in Q1 that is still in the
+  future (a long build can make runs overlap), and run
+  `node tools/send-plan.mjs --count <number of emails> --last <that time>`. It prints `SEND1=`
+  to `SEND<n>=`: the first 3 to 15 minutes from now (and at least 6 minutes after the last
+  email), every gap random and at least 6 minutes, no two gaps in a row alike, all within 56
+  minutes. Write the times in Q1 straight away, as `<date> run planned sends: <times>`.
+  Send one email at each time, mixing follow-ups and cold emails, never earlier than planned and
+  never two at once. If it prints fewer times than you asked for, send only that many this run.
+  If a step takes you past a send time, send as soon as you are free and keep the remaining
+  times as planned. Do not invent your own times or round them to neat numbers.
+- **Claim each row before sending:** set J to `Sending <UTC date and time>`, then re-read the
+  row; if another run changed it in the meantime, leave it. A `Sending` claim older than 1 hour
+  means a run died mid-way: check `in:sent` for that address; if the email went, fill the row as
+  sent, otherwise put J back to what it was (`Queued` or `Emailed …`).
+
+### Follow-ups
+- Due for a row whose J is `Emailed …`, W is empty, U is 7 or more days ago, and Gmail shows no
+  message from the prospect in the thread or from their address (check again right before
+  sending; an out-of-office auto-reply does not count). Oldest first, at most 2 per run.
+- Send with `send_message`: `replyThreadId` = the outreach thread id (from P), `to` = the
+  address in D, the same subject as the cold email, plain `body`, `includeSignature: false`.
+- Body: `Hi there,` then 1 to 2 sentences, then the opt-out line. Pattern:
   `By the way, the website I made for <Business> is interactive, so visitors stay on it longer
   and are more likely to get in touch than on a basic website. Want me to walk you through it?`
-  Last line: `Reply 'stop' to opt out.` Then fill W, set J `Followed up <date>`, and log it.
-  Claim the row with `Sending <time>` first, exactly as for a cold email.
-- **New cold emails:** take the first `Queued` rows, US first; take a UK or AU row only if it keeps them at no more
-  than 1 in 10 of the emails sent in the last 7 days. UK: only rows marked as a limited company
-  (PECR); never UK sole traders. AU: only rows whose Notes say the address is published by the
-  business for business enquiries (Spam Act inferred consent).
-- Claim each row before sending: set J to `Sending <UTC date and time>`, then re-read the row;
-  if another run changed it in the meantime, leave it. A `Sending` claim older than 1 hour with
-  no U value means a run died mid-way: check `to:<address> in:sent`; if sent, fill the row as
-  sent, otherwise set it back to `Queued`.
+  Last line: `Reply 'stop' to opt out.`
+- Then fill W (UTC date and time), set J `Followed up <date>`, and log it.
+
+### New cold emails
+- Take the first `Queued` rows, US first; take a UK or AU row only if it keeps them at no more
+  than 1 in 10 of the cold emails sent in the last 7 days. UK: only rows marked as a limited
+  company (PECR); never UK sole traders. AU: only rows whose Notes say the address is published
+  by the business for business enquiries (Spam Act inferred consent).
 - Right before sending, re-check in Gmail that nothing has ever been sent to that address
   (`to:<address> in:sent`). If something has, set `Skipped: already emailed` and take the next row.
-- Write the email. **Attention-grabbing, plain text, no links, no attachments:**
+- Write the email. **Attention-grabbing, plain text, no links, no attachments, no signature:**
   - Subject: names the problem and the solution, sentence case, no "Re:". Default:
     `You don't have a website, that's why I made you one`. Small variations are fine
     (e.g. `<Business> has no website, so I made you one`) so not every email is identical.
+  - Greeting `Hi there,` (or the owner's first name only if a public source names them).
   - Body: **1 to 2 short sentences in total**, then the opt-out line, nothing else. Pattern:
     `<Business> has good ratings but no website, so I built you a mockup site to win more
     <trade> customers in <town> and stand out from competitors. Want to see it?`
     Only say "good ratings" when the Google rating in F is 4.3 or higher; below that, say
     `has <n> Google reviews but no website` instead. Trade and town must be true.
   - Last line, always: `Reply 'stop' to opt out.`
-  - Greeting `Hi there,` (or the owner's first name only if a public source names them).
-    No sign-off or name: send with `includeSignature: true` so Samuel's Gmail signature
-    (with his postal address) is added.
-- Send it with the Gmail send tool (`send_message`) as plain `body`. Then fill N, O,
+  - No sign-off and no name.
+- Send it with `send_message` as plain `body`, `includeSignature: false`. Then fill N, O,
   P (`<thread link> (thread <threadId>)`, the follow-up needs the thread id),
   U (UTC date and time) and J `Emailed <date>`.
 - If the send tool is not available or fails, do not create a draft instead: record it in Q1
@@ -281,5 +291,5 @@ Spend real effort here; the design must come out of it. Write `sites/<slug>/BRIE
 | `node tools/record.mjs --site sites/<slug>` | Records desktop + phone walkthrough to `walkthrough.mp4` |
 | `node tools/deploy.mjs --site sites/<slug> [--domain <slug>.samuelelim.com]` | Deploys `dist/` to Vercel, prints the public link and the subdomain state |
 | `node tools/token-check.mjs` | Days left on the Vercel token |
-| `node tools/send-plan.mjs --last <ISO time>` | Two random send times for this run's outreach emails |
+| `node tools/send-plan.mjs --count <1-4> --last <ISO time>` | Random, irregular send times for this run's emails |
 | `node tools/wait-until.mjs <ISO time>` | Waits up to 9 minutes toward a time; prints `DUE` or `WAITING <min>` |
