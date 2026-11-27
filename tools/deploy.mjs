@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Publishes a built mockup (sites/<slug>/dist) to Vercel as its own project
 // and prints the public link.
-//   node tools/deploy.mjs --site sites/<slug>
+//   node tools/deploy.mjs --site sites/<slug> [--domain <slug>.samuelelim.com]
+// With --domain the subdomain is attached to the project and its DNS state is
+// printed on a second line: DOMAIN_OK, or DOMAIN_NEEDS_DNS with the record to add.
 //
 // Auth: the cloud environment holds the Vercel token as a network secret for
 // api.vercel.com and adds it to requests itself, so no token is stored here.
@@ -74,3 +76,16 @@ if (d.projectId) {
 
 const alias = (d.alias || []).find((a) => a.endsWith('.vercel.app')) || d.url;
 console.log(`https://${alias}`);
+
+const domain = arg('domain', '');
+if (domain && d.projectId) {
+  const add = api('POST', `/v10/projects/${d.projectId}/domains`, { body: { name: domain } });
+  if (add.status >= 300 && add.json?.error?.code !== 'domain_already_in_use_by_project' && !/already/i.test(add.json?.error?.message || '')) {
+    console.log(`DOMAIN_FAILED ${domain}: HTTP ${add.status} ${JSON.stringify(add.json.error || add.json)}`);
+    process.exit(0);
+  }
+  const cfg = api('GET', `/v6/domains/${domain}/config`).json;
+  const sub = domain.split('.')[0];
+  if (cfg && cfg.misconfigured === false) console.log(`DOMAIN_OK https://${domain}`);
+  else console.log(`DOMAIN_NEEDS_DNS https://${domain} -> add DNS record: CNAME ${sub} -> cname.vercel-dns.com (then Vercel issues the certificate within minutes)`);
+}
