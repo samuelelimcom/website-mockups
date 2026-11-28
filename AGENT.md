@@ -247,7 +247,8 @@ Only the reply drafts in B6 carry the signature.
   - Body: **1 to 2 short sentences in total**, then the opt-out and address lines, nothing else. Pattern:
     `<Business> has good ratings but no website, so I built you a mockup site to win more
     <trade> customers in <town> and stand out from competitors. Want to see it?`
-    Only say "good ratings" when the Google rating in F is 4.3 or higher; below that, say
+    Only say "good ratings" when the Google rating in F is 4.3 or higher (if F is empty, say
+    `has no website` and mention no ratings or reviews); below 4.3, say
     `has <n> Google reviews but no website` instead. Trade and town must be true.
   - Last two lines, always: `Reply 'stop' to opt out.` then
     `Samuel Lim · Quezon City 1117, Philippines`
@@ -259,24 +260,32 @@ Only the reply drafts in B6 carry the signature.
   and stop sending for this run.
 
 ## 3. Prospecting: keep the queue full
-- If fewer than 8 rows are `Queued`, find new prospects until there are 8 (at most 6 new rows
-  per run). Mostly US; add a UK or AU row only now and then.
-- Prefer trades with visual work and steady demand: roofing, cleaning, landscaping, trades,
-  grooming, auto, beauty. Prefer 4.5+ rating and 10+ reviews.
-- A prospect qualifies only if **all** are true, each supported by a source you opened:
-  1. A Google Business Profile exists.
-  2. It lists no website, and searching the exact name with the town, and the phone number,
-     finds no working website (Facebook pages and directory listings do not count).
-  3. A contact email is publicly published by the business.
-  4. It looks active (recent reviews or posts).
-  5. Gmail shows nothing ever sent to that address (`to:<address> in:sent`), and the name and
+- Target volume is about 50 cold emails a day (2 per hourly run), so keep at least **30 rows
+  `Queued`**. If fewer, add new prospects (at most 12 new rows per run). US only unless Samuel
+  says otherwise.
+- Prefer trades with visual work and steady demand: roofing, cleaning, landscaping, lawn care,
+  pressure washing, gutters, tree service, junk removal, mobile detailing, grooming.
+- **How to find them (this environment cannot open Facebook, Google Maps or directories):** use
+  `WebSearch` with `mode: "extended"` and queries like `facebook <trade> <state> "gmail.com"`.
+  Its results summarise Facebook business pages, often with the page's listed email and town.
+  Rotate trades and states; do not reuse a trade/state pair already in the sheet's Notes that day.
+- A prospect qualifies only if **all** are true:
+  1. A search result shows the business's own page listing its contact email (not a review or
+     a third party), and the business is a real local service business (no franchises).
+  2. One standard search of the exact name with the town finds no website of its own (Facebook,
+     Instagram and directory listings do not count; a Wix/Google Sites/site-builder page does).
+  3. It looks active (no "opening soon", no posts or reviews only from years ago).
+  4. Gmail shows nothing ever sent to that address (`to:<address> in:sent`), and the name and
      address are not already in the sheet.
-- Google Maps pages cannot be opened from this environment. Use web search and public
-  directories. For column H use a place link when a source gives the place id, otherwise
-  `https://www.google.com/maps/search/?api=1&query=<name+city>`. If you cannot evidence the
-  profile, do not add the business.
-- Append rows A to I with Status `Queued`. In Notes record where the email and the "no website"
-  evidence came from, and for UK rows whether it is a limited company.
+- A Google profile cannot be checked from here. Leave F and G empty unless a source gives the
+  **Google** rating; never copy Facebook or Yelp ratings into F/G. For column H use
+  `https://www.google.com/maps/search/?api=1&query=<name+city>`.
+- Append rows A to J with Status `Queued`. Notes: `Trade: <trade>. Email from <source URL>.
+  No website found by name search (<what the results showed>). Google profile NOT verified:
+  email must not mention ratings or reviews.` Never invent a phone number; leave E empty if
+  the only source is doubtful.
+- When F is empty, the cold email uses `<Business> has no website, so I built you a mockup site
+  to win more <trade> customers in <town> and stand out from competitors. Want to see it?`
 
 ## 4. Log and finish
 - Append one dated line to Q1: replies found, emails sent (to whom), prospects added, builds.
